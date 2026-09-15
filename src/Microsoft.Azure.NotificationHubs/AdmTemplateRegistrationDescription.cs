@@ -88,6 +88,16 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
+        internal AdmTemplateRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] AdmTemplateXmlMembers = XmlMember.Extend(AdmXmlMembers,
+            XmlMember.Create<AdmTemplateRegistrationDescription>(ManagementStrings.BodyTemplate, (w, n, o) => XmlContract.WriteCData(w, n, o.BodyTemplate), (o, e) => o.BodyTemplate = XmlContract.ReadCData(e)),
+            XmlMember.Create<AdmTemplateRegistrationDescription>(ManagementStrings.TemplateName, (w, n, o) => XmlContract.WriteString(w, n, o.TemplateName, true), (o, e) => o.TemplateName = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => AdmTemplateXmlMembers;
+
         internal override string AppPlatForm
         {
             get

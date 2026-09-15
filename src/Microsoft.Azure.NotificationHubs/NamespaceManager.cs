@@ -625,22 +625,9 @@ namespace Microsoft.Azure.NotificationHubs
 
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
-        private static string SerializeObject<T>(T model)
+        private static string CreateRequestBody(EntityDescription model)
         {
-            var serializer = new DataContractSerializer(typeof(T));
-            var stringBuilder = new StringBuilder();
-
-            using (var xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings { OmitXmlDeclaration = true }))
-            {
-                serializer.WriteObject(xmlWriter, model);
-            }
-
-            return stringBuilder.ToString();
-        }
-
-        private static string CreateRequestBody<T>(T model)
-        {
-            return AddHeaderAndFooterToXml(SerializeObject(model));
+            return AddHeaderAndFooterToXml(new EntityDescriptionSerializer().Serialize(model));
         }
 
         private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response, string trackingId)
@@ -669,17 +656,20 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        private static T GetModelFromResponse<T>(XmlReader xmlReader, string trackingId) where T : class
+        private static T GetModelFromResponse<T>(XmlReader xmlReader, string trackingId) where T : EntityDescription
         {
-            var serializer = new DataContractSerializer(typeof(T));
             try
             {
                 using (xmlReader)
                 {
-                    return (T)serializer.ReadObject(xmlReader);
+                    return (T)new EntityDescriptionSerializer().Deserialize(xmlReader, typeof(T).Name);
                 }
-            } 
+            }
             catch (SerializationException ex) when (ex.InnerException is XmlException xmlException)
+            {
+                throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);
+            }
+            catch (XmlException xmlException)
             {
                 throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);
             }

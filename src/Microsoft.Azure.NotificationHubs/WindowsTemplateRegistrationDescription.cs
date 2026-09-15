@@ -269,6 +269,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3003)]
         public string TemplateName { get; set; }
 
+        internal WindowsTemplateRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] WindowsTemplateXmlMembers = XmlMember.Extend(WindowsXmlMembers,
+            XmlMember.Create<WindowsTemplateRegistrationDescription>(ManagementStrings.BodyTemplate, (w, n, o) => XmlContract.WriteCData(w, n, o.BodyTemplate), (o, e) => o.BodyTemplate = XmlContract.ReadCData(e)),
+            XmlMember.Create<WindowsTemplateRegistrationDescription>(ManagementStrings.WnsHeaders, (w, n, o) => XmlContract.WriteStringDictionary(w, n, o.WnsHeaders, "WnsHeader", "Header", "Value", true), (o, e) => o.WnsHeaders = XmlContract.ReadStringDictionary(e, new WnsHeaderCollection(), "Header", "Value")),
+            XmlMember.Create<WindowsTemplateRegistrationDescription>(ManagementStrings.TemplateName, (w, n, o) => XmlContract.WriteString(w, n, o.TemplateName, true), (o, e) => o.TemplateName = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => WindowsTemplateXmlMembers;
+
         internal override void OnValidate()
         {
             base.OnValidate();

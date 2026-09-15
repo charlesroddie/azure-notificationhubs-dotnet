@@ -15,3 +15,5 @@ jobs:
           global-json-file: global.json
       - run: dotnet build Microsoft.Azure.NotificationHubs.sln -c Release -p:GeneratePackageOnBuild=false
       - run: dotnet test Microsoft.Azure.NotificationHubs.sln -c Release --no-build
+      - run: dotnet publish src/Microsoft.Azure.NotificationHubs.AotCheck/Microsoft.Azure.NotificationHubs.AotCheck.csproj -c Release -r linux-x64 -o aot
+      - run: ./aot/Microsoft.Azure.NotificationHubs.AotCheck

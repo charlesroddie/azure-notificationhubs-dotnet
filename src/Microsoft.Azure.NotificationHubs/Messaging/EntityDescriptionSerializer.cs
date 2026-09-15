@@ -14,71 +14,25 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     internal class EntityDescriptionSerializer
     {
-        const int MaxItemsInObjectGraph = 256;
+        const string RegistrationDescriptionName = nameof(RegistrationDescription);
 
-        readonly Dictionary<string, DataContractSerializer> entirySerializers;
-
-        public EntityDescriptionSerializer()
+        static readonly Dictionary<string, Func<EntityDescription>> Factories = new Dictionary<string, Func<EntityDescription>>
         {
-            this.entirySerializers = new Dictionary<string, DataContractSerializer>();
-            this.entirySerializers.Add(
-                typeof(RegistrationDescription).Name,
-                this.CreateSerializer<RegistrationDescription>());
+            { nameof(WindowsRegistrationDescription), () => new WindowsRegistrationDescription() },
+            { nameof(WindowsTemplateRegistrationDescription), () => new WindowsTemplateRegistrationDescription() },
+            { nameof(AppleRegistrationDescription), () => new AppleRegistrationDescription() },
+            { nameof(AppleTemplateRegistrationDescription), () => new AppleTemplateRegistrationDescription() },
+            { nameof(FcmV1RegistrationDescription), () => new FcmV1RegistrationDescription() },
+            { nameof(FcmV1TemplateRegistrationDescription), () => new FcmV1TemplateRegistrationDescription() },
+            { nameof(AdmRegistrationDescription), () => new AdmRegistrationDescription() },
+            { nameof(AdmTemplateRegistrationDescription), () => new AdmTemplateRegistrationDescription() },
+            { nameof(BaiduRegistrationDescription), () => new BaiduRegistrationDescription() },
+            { nameof(BaiduTemplateRegistrationDescription), () => new BaiduTemplateRegistrationDescription() },
+            { nameof(NotificationHubJob), () => new NotificationHubJob() },
+            { nameof(NotificationHubDescription), () => new NotificationHubDescription() },
+        };
 
-            this.entirySerializers.Add(
-                typeof(WindowsRegistrationDescription).Name,
-                this.CreateSerializer<WindowsRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(WindowsTemplateRegistrationDescription).Name,
-                this.CreateSerializer<WindowsTemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(AppleRegistrationDescription).Name,
-                this.CreateSerializer<AppleRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(AppleTemplateRegistrationDescription).Name,
-                this.CreateSerializer<AppleTemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(FcmV1RegistrationDescription).Name,
-                this.CreateSerializer<FcmV1RegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(FcmV1TemplateRegistrationDescription).Name,
-                this.CreateSerializer<FcmV1TemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(AdmRegistrationDescription).Name,
-                this.CreateSerializer<AdmRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(AdmTemplateRegistrationDescription).Name,
-                this.CreateSerializer<AdmTemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(BaiduRegistrationDescription).Name,
-                this.CreateSerializer<BaiduRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(BaiduTemplateRegistrationDescription).Name,
-                this.CreateSerializer<BaiduTemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(NotificationHubJob).Name,
-                this.CreateSerializer<NotificationHubJob>());
-        }
-
-        private DataContractSerializer CreateSerializer<T>()
-        {
-            return new DataContractSerializer(typeof(T), new DataContractSerializerSettings
-            {
-                MaxItemsInObjectGraph = MaxItemsInObjectGraph
-            });
-        }
-
-        public bool CanDeserialize(string typeName) => this.entirySerializers.ContainsKey(typeName);
+        public bool CanDeserialize(string typeName) => Factories.ContainsKey(typeName);
 
         public EntityDescription Deserialize(XmlReader reader, string typeName)
         {
@@ -91,9 +45,15 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 throw new ArgumentNullException(nameof(typeName));
             }
 
-            var serializer = GetSerializer(typeName);
+            var element = XmlContract.ReadElement(reader, typeName);
+            if (typeName == RegistrationDescriptionName)
+            {
+                typeName = XmlContract.ReadInstanceType(element) ?? throw new SerializationException($"Element '{RegistrationDescriptionName}' does not specify a registration type.");
+            }
 
-            return (EntityDescription)serializer.ReadObject(reader);
+            var entity = Factories.TryGetValue(typeName, out var factory) ? factory() : throw new InvalidOperationException($"Unknown entity type {typeName}");
+            XmlContract.ReadMembers(element, entity, entity.XmlMembers);
+            return entity;
         }
 
         public string Serialize(EntityDescription description)
@@ -112,30 +72,22 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             return stringBuilder.ToString();
         }
 
+        // Registrations are written as their base contract with an instance type, as before
         public void Serialize(EntityDescription description, XmlWriter writer)
         {
-            DataContractSerializer serializer;
-            if (description is RegistrationDescription)
-            {
-                serializer = GetSerializer(typeof(RegistrationDescription).Name);
-            }
-            else
-            {
-                serializer = GetSerializer(description.GetType().Name);
-            }
-
-            serializer.WriteObject(writer, description);
-        }
-
-        private DataContractSerializer GetSerializer(string typeName)
-        {
-            if (this.entirySerializers.TryGetValue(typeName, out var serializer))
-            {
-                return serializer;
-            }
-            else
+            var typeName = description.GetType().Name;
+            if (!Factories.ContainsKey(typeName))
             {
                 throw new InvalidOperationException($"Unknown entity type {typeName}");
+            }
+
+            if (description is RegistrationDescription)
+            {
+                XmlContract.WriteObject(writer, RegistrationDescriptionName, description, description.XmlMembers, typeName);
+            }
+            else
+            {
+                XmlContract.WriteObject(writer, typeName, description, description.XmlMembers);
             }
         }
     }

@@ -50,6 +50,14 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = "BlockedOn", IsRequired = false, EmitDefaultValue = false)]
         public DateTime? BlockedOn { get; set; }
 
+        internal static readonly XmlMember[] CredentialXmlMembers =
+        {
+            XmlMember.Create<PnsCredential>("BlockedOn", (w, n, o) => XmlContract.WriteDateTime(w, n, o.BlockedOn), (o, e) => o.BlockedOn = XmlContract.ReadDateTime(e)),
+            XmlMember.Create<PnsCredential>(nameof(Properties), (w, n, o) => XmlContract.WriteStringDictionary(w, n, o.Properties, "Property", "Name", "Value", true), (o, e) => o.Properties = XmlContract.ReadStringDictionary(e, new PnsCredentialProperties(), "Name", "Value")),
+        };
+
+        internal override XmlMember[] XmlMembers => CredentialXmlMembers;
+
         /// <summary>
         /// Gets or sets the value associated with this credential.
         /// </summary>

@@ -105,6 +105,15 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.DeviceToken, Order = 2001, IsRequired = true)]
         public string DeviceToken { get; set; }
 
+        internal AppleRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] AppleXmlMembers = XmlMember.Extend(RegistrationXmlMembers,
+            XmlMember.Create<AppleRegistrationDescription>(ManagementStrings.DeviceToken, (w, n, o) => XmlContract.WriteString(w, n, o.DeviceToken, true), (o, e) => o.DeviceToken = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => AppleXmlMembers;
+
         internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.DeviceToken))

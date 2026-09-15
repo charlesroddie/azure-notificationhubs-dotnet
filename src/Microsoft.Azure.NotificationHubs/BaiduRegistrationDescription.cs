@@ -92,6 +92,16 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.BaiduChannelId, Order = 2002, IsRequired = true)]
         public string BaiduChannelId { get; set; }
 
+        internal BaiduRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] BaiduXmlMembers = XmlMember.Extend(RegistrationXmlMembers,
+            XmlMember.Create<BaiduRegistrationDescription>(ManagementStrings.BaiduUserId, (w, n, o) => XmlContract.WriteString(w, n, o.BaiduUserId, true), (o, e) => o.BaiduUserId = XmlContract.ReadString(e)),
+            XmlMember.Create<BaiduRegistrationDescription>(ManagementStrings.BaiduChannelId, (w, n, o) => XmlContract.WriteString(w, n, o.BaiduChannelId, true), (o, e) => o.BaiduChannelId = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => BaiduXmlMembers;
+
         internal override string AppPlatForm
         {
             get { return BaiduCredential.AppPlatformName; }

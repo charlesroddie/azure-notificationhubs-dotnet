@@ -109,6 +109,16 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
+        internal FcmV1TemplateRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] FcmV1TemplateXmlMembers = XmlMember.Extend(FcmV1XmlMembers,
+            XmlMember.Create<FcmV1TemplateRegistrationDescription>(ManagementStrings.BodyTemplate, (w, n, o) => XmlContract.WriteCData(w, n, o.BodyTemplate), (o, e) => o.BodyTemplate = XmlContract.ReadCData(e)),
+            XmlMember.Create<FcmV1TemplateRegistrationDescription>(ManagementStrings.TemplateName, (w, n, o) => XmlContract.WriteString(w, n, o.TemplateName, true), (o, e) => o.TemplateName = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => FcmV1TemplateXmlMembers;
+
         internal override void OnValidate()
         {
             base.OnValidate();

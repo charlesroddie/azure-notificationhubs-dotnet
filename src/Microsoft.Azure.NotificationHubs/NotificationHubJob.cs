@@ -236,5 +236,22 @@ namespace Microsoft.Azure.NotificationHubs
         /// </value>
         [DataMember(Name = ManagementStrings.UpdatedAt, IsRequired = false, Order = 1011, EmitDefaultValue = false)]
         public DateTime UpdatedAt { get; internal set; }
+
+        internal static readonly XmlMember[] JobXmlMembers =
+        {
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.NotificationHubJobId, (w, n, o) => XmlContract.WriteString(w, n, o.JobId, false), (o, e) => o.JobId = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.Progress, (w, n, o) => XmlContract.WriteDecimal(w, n, o.Progress, false), (o, e) => o.Progress = XmlContract.ReadDecimal(e) ?? 0),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.JobType, (w, n, o) => XmlContract.WriteEnum(w, n, o.JobType), (o, e) => o.JobType = XmlContract.ReadEnum<NotificationHubJobType>(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.Status, (w, n, o) => { if (o.Status != default) XmlContract.WriteEnum(w, n, o.Status); }, (o, e) => o.Status = XmlContract.ReadEnum<NotificationHubJobStatus>(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.OutputContainerUri, (w, n, o) => XmlContract.WriteUri(w, n, o.OutputContainerUri, false), (o, e) => o.OutputContainerUri = XmlContract.ReadUri(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.ImportFileUri, (w, n, o) => XmlContract.WriteUri(w, n, o.ImportFileUri, false), (o, e) => o.ImportFileUri = XmlContract.ReadUri(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.InputProperties, (w, n, o) => XmlContract.WriteArrayDictionary(w, n, o.InputProperties), (o, e) => o.InputProperties = XmlContract.ReadArrayDictionary(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.Failure, (w, n, o) => XmlContract.WriteString(w, n, o.Failure, false), (o, e) => o.Failure = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.OutputProperties, (w, n, o) => XmlContract.WriteArrayDictionary(w, n, o.OutputProperties), (o, e) => o.OutputProperties = XmlContract.ReadArrayDictionary(e)),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.CreatedAt, (w, n, o) => XmlContract.WriteDateTime(w, n, o.CreatedAt == default ? (DateTime?)null : o.CreatedAt), (o, e) => o.CreatedAt = XmlContract.ReadDateTime(e) ?? default),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.UpdatedAt, (w, n, o) => XmlContract.WriteDateTime(w, n, o.UpdatedAt == default ? (DateTime?)null : o.UpdatedAt), (o, e) => o.UpdatedAt = XmlContract.ReadDateTime(e) ?? default),
+        };
+
+        internal override XmlMember[] XmlMembers => JobXmlMembers;
     }
 }
