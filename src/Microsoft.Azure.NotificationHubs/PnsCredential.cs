@@ -14,11 +14,6 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Name = ManagementStrings.PnsCredential, Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(ApnsCredential))]
-#pragma warning disable CS0618  
-    [KnownType(typeof(GcmCredential))]
-#pragma warning restore CS0618
-    [KnownType(typeof(FcmCredential))]
-    [KnownType(typeof(MpnsCredential))]
     [KnownType(typeof(WnsCredential))]
     [KnownType(typeof(AdmCredential))]
     [KnownType(typeof(FcmV1Credential))]

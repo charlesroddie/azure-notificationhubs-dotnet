@@ -4,6 +4,7 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
 using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -26,24 +27,18 @@ namespace Microsoft.Azure.NotificationHubs
         Apns=2,
 
         /// <summary>
-        /// MPNS Installation Platform
+        /// Retired MPNS platform, kept so existing installations can be read
         /// </summary>
         [EnumMember(Value = "mpns")]
+        [Obsolete("MPNS is retired.")]
         Mpns=3,
 
         /// <summary>
-        /// FCM Installation Platform
+        /// Retired GCM/legacy FCM platform, kept so existing installations can be read and migrated to FcmV1
         /// </summary>
-        ///
-        /// <remarks>
-        /// The "gcm" value is intentional. As of version 3.0.0, all GCM related methods are hidden from
-        /// the end-user in order to incentivize them to switch their code over to FCM methods. However,
-        /// due to the backend having issues dealing with FCM models, the SDK converts them to GCM prior
-        /// sending to the service, so the "Fcm" value will be sent as "Gcm". Both SDK and backend still
-        /// transparently operate GCM models while allowing end-user to work with FCM classes.
-        /// </remarks>
         [EnumMember(Value = "gcm")]
-        Fcm=4,
+        [Obsolete("GCM and legacy FCM are retired. Use FcmV1.")]
+        Gcm=4,
 
         /// <summary>
         /// ADM Installation Platform

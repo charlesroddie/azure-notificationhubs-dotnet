@@ -979,23 +979,14 @@
   <data name="FailedToDeserializeBodyTemplate" xml:space="preserve">
     <value>Failed to deserialize the body template.</value>
   </data>
-  <data name="GcmEndpointNotSpecified" xml:space="preserve">
-    <value>GcmEndpoint is either not specified or invalid.</value>
-  </data>
   <data name="GCMRegistrationInvalidId" xml:space="preserve">
     <value>GCM Registration Id is invalid.</value>
-  </data>
-  <data name="GcmRequiredProperties" xml:space="preserve">
-    <value>Only GoogleApiKey and GcmEndpoint are required.</value>
   </data>
   <data name="FCMRegistrationInvalidId" xml:space="preserve">
     <value>FCM Registration Id is invalid.</value>
   </data>
   <data name="GoogleApiKeyNotSpecified" xml:space="preserve">
     <value>GoogleApiKey is either not specified or invalid.</value>
-  </data>
-  <data name="InvalidGcmEndpoint" xml:space="preserve">
-    <value>Invalid GcmEndpoint specified.</value>
   </data>
   <data name="NokiaXEndpointNotSpecified" xml:space="preserve">
     <value>NokiaXEndpoint is either not specified or invalid.</value>
@@ -1068,36 +1059,6 @@
   </data>
   <data name="FaultingPairedMessagingFactory" xml:space="preserve">
     <value>Pairing error: MessageFactory at '{0}' is open and MessagingFactory at '{1}' is not open. Faulting MessagingFactory at '{0}'.</value>
-  </data>
-  <data name="NotSupportedXMLFormatAsBodyTemplateForMpns" xml:space="preserve">
-    <value>The bodyTemplate is not in accepted XML format. The first node of the bodyTemplate should be Tile/Toast, except raw template.</value>
-  </data>
-  <data name="NotSupportedXMLFormatAsPayloadForMpns" xml:space="preserve">
-    <value>The payload is not in accepted XML format. The first node should be Tile/Toast. If want to send raw notification, please set "X-NotificationClass" to "3" in header.</value>
-  </data>
-  <data name="InvalidMpnsCertificate" xml:space="preserve">
-    <value>The certificate specified in mpns credentials is not valid yet.</value>
-  </data>
-  <data name="MissingMpnsHeader" xml:space="preserve">
-    <value>Must contain Mpns Header : '{0}'.</value>
-  </data>
-  <data name="MpnsCertificateError" xml:space="preserve">
-    <value>Unable to use the certificate specified in mpns credentials. The error is  : '{0}'.</value>
-  </data>
-  <data name="MpnsCertificateExpired" xml:space="preserve">
-    <value>The certificate specified in mpns credentials is expired.</value>
-  </data>
-  <data name="MpnsCertificatePrivatekeyMissing" xml:space="preserve">
-    <value>The certificate specified in mpns credentials does not have a private key.</value>
-  </data>
-  <data name="MpnsHeaderIsNullOrEmpty" xml:space="preserve">
-    <value>MPNS header '{0}' is null or empty.</value>
-  </data>
-  <data name="MpnsInvalidPropeties" xml:space="preserve">
-    <value>MpnsCertificate or CertificateKey is either not specified or invalid.</value>
-  </data>
-  <data name="MpnsRequiredPropertiesError" xml:space="preserve">
-    <value>Only 2 properties MpnsCertificate and CertificateKey are required.</value>
   </data>
   <data name="UnknownApiVersion" xml:space="preserve">
     <value>The api-version '{0}' in the query string is not supported. Either remove it from the Uri or use one of '{1}'.</value>

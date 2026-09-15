@@ -11,9 +11,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         public void NotificationContentTypeCorrespondsToApi()
         {
             Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}").ContentType);
-            Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new FcmNotification("{\"data\":{\"message\":\"Message\"}}").ContentType);
             Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new FcmV1Notification("{\"data\":{\"message\":\"Message\"}}").ContentType);
-            Assert.Equal($"application/xml;charset={Encoding.UTF8.WebName}", new MpnsNotification("<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>").ContentType);
             Assert.Equal("application/xml", new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>").ContentType);
             Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new TemplateNotification(new Dictionary<string, string>()).ContentType);
             Assert.Equal("application/json", new AdmNotification("{\"data\":{\"key1\":\"value1\"}}").ContentType);

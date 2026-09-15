@@ -510,126 +510,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Sends Google Cloud Messaging (GCM) native notification.
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a GCM message can be found <a href="https://developers.google.com/cloud-messaging/downstream#notifications_and_data_messages">here</a>.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload)
-        {
-            return SendGcmNativeNotificationAsync(jsonPayload, string.Empty);
-        }
-
-        /// <summary>
-        /// Sends GCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a GCM message can be found <a href="https://developers.google.com/cloud-messaging/downstream#notifications_and_data_messages">here</a>.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, string tagExpression)
-        {
-            return SendNotificationAsync(new GcmNotification(jsonPayload), tagExpression);
-        }
-
-        /// <summary>
-        /// Sends a GCM native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a GCM message can be found <a href="https://developers.google.com/cloud-messaging/downstream#notifications_and_data_messages">here</a>.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
-        {
-            return SendNotificationAsync(new GcmNotification(jsonPayload), tags);
-        }
-
-        /// <summary>
-        /// Sends Firebase Cloud Messaging (FCM) native notification.
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload)
-        {
-            return SendFcmNativeNotificationAsync(jsonPayload, string.Empty);
-        }
-
-        /// <summary>
-        /// Sends Firebase Cloud Messaging (FCM) native notification.
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
-        {
-            return SendFcmNativeNotificationAsync(jsonPayload, string.Empty, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends FCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression)
-        {
-            return SendNotificationAsync(new FcmNotification(jsonPayload), tagExpression);
-        }
-
-        /// <summary>
-        /// Sends FCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new FcmNotification(jsonPayload), tagExpression, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a FCM native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
-        {
-            return SendNotificationAsync(new FcmNotification(jsonPayload), tags);
-        }
-
-        /// <summary>
-        /// Sends a FCM native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new FcmNotification(jsonPayload), tags, cancellationToken);
-        }
-
-        /// <summary>
         /// Sends Firebase Cloud Messaging (FCM) V1 native notification.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM V1 message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
@@ -864,85 +744,6 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
         {
             return SendNotificationAsync(new AdmNotification(jsonPayload), tags, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification. To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload)
-        {
-            return SendMpnsNativeNotificationAsync(nativePayload, string.Empty);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification. To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, CancellationToken cancellationToken)
-        {
-            return SendMpnsNativeNotificationAsync(nativePayload, string.Empty, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, string tagExpression)
-        {
-            return SendNotificationAsync(new MpnsNotification(nativePayload), tagExpression);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, string tagExpression, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new MpnsNotification(nativePayload), tagExpression, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The notification payload.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, IEnumerable<string> tags)
-        {
-            return SendNotificationAsync(new MpnsNotification(nativePayload), tags);
-        }
-
-        /// <summary>
-        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The notification payload.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, IEnumerable<string> tags, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new MpnsNotification(nativePayload), tags, cancellationToken);
         }
 
         /// <summary>
@@ -1810,170 +1611,6 @@ namespace Microsoft.Azure.NotificationHubs
             return CreateRegistrationAsync(new AdmTemplateRegistrationDescription(admRegistrationId, jsonPayload, tags), cancellationToken);
         }
 
-        /// <summary>
-        /// Asynchronously creates GCM native registration.
-        /// </summary>
-        /// <param name="gcmRegistrationId">The GCM registration ID.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
-        internal Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId)
-        {
-            return CreateGcmNativeRegistrationAsync(gcmRegistrationId, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates GCM native registration.
-        /// </summary>
-        /// <param name="gcmRegistrationId">The GCM registration ID.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
-        internal Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new GcmRegistrationDescription(gcmRegistrationId, tags));
-        }
-
-        /// <summary>
-        /// Asynchronously creates GCM template registration.
-        /// </summary>
-        /// <param name="gcmRegistrationId">The GCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
-        internal Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload)
-        {
-            return CreateGcmTemplateRegistrationAsync(gcmRegistrationId, jsonPayload, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates GCM template registration.
-        /// </summary>
-        /// <param name="gcmRegistrationId">The GCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
-        internal Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new GcmTemplateRegistrationDescription(gcmRegistrationId, jsonPayload, tags));
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM native registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId)
-        {
-            return CreateFcmNativeRegistrationAsync(fcmRegistrationId, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM native registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, CancellationToken cancellationToken)
-        {
-            return CreateFcmNativeRegistrationAsync(fcmRegistrationId, null, cancellationToken);
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM native registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new FcmRegistrationDescription(fcmRegistrationId, tags));
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM native registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="tags">The tags.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, IEnumerable<string> tags, CancellationToken cancellationToken)
-        {
-            return CreateRegistrationAsync(new FcmRegistrationDescription(fcmRegistrationId, tags), cancellationToken);
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM template registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload)
-        {
-            return CreateFcmTemplateRegistrationAsync(fcmRegistrationId, jsonPayload, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM template registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, CancellationToken cancellationToken)
-        {
-            return CreateFcmTemplateRegistrationAsync(fcmRegistrationId, jsonPayload, null, cancellationToken);
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM template registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags));
-        }
-
-        /// <summary>
-        /// Asynchronously creates FCM template registration.
-        /// </summary>
-        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <param name="tags">The tags.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
-        {
-            return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags), cancellationToken);
-        }
-
         #region FCM V1 Create Registration
 
         /// <summary>
@@ -2140,59 +1777,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         #endregion
-
-        /// <summary>
-        /// Asynchronously creates MPNS native registration.
-        /// </summary>
-        /// <param name="channelUri">The channel URI.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<MpnsRegistrationDescription> CreateMpnsNativeRegistrationAsync(string channelUri)
-        {
-            return CreateMpnsNativeRegistrationAsync(channelUri, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates MPNS native registration.
-        /// </summary>
-        /// <param name="channelUri">The channel URI.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<MpnsRegistrationDescription> CreateMpnsNativeRegistrationAsync(string channelUri, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new MpnsRegistrationDescription(new Uri(channelUri), tags));
-        }
-
-        /// <summary>
-        /// Asynchronously creates MPNS template registration. To specify additional properties at creation, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.CreateRegistrationAsync``1(``0)" /> method.
-        /// </summary>
-        /// <param name="channelUri">The channel URI.</param>
-        /// <param name="xmlTemplate">The XML template.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<MpnsTemplateRegistrationDescription> CreateMpnsTemplateRegistrationAsync(string channelUri, string xmlTemplate)
-        {
-            return CreateMpnsTemplateRegistrationAsync(channelUri, xmlTemplate, null);
-        }
-
-        /// <summary>
-        /// Asynchronously creates MPNS template registration. To specify additional properties at creation, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.CreateRegistrationAsync``1(``0)" /> method.
-        /// </summary>
-        /// <param name="channelUri">The channel URI.</param>
-        /// <param name="xmlTemplate">The XML template.</param>
-        /// <param name="tags">The tags.</param>
-        /// <returns>
-        /// The task that completes the asynchronous operation.
-        /// </returns>
-        public Task<MpnsTemplateRegistrationDescription> CreateMpnsTemplateRegistrationAsync(
-            string channelUri, string xmlTemplate, IEnumerable<string> tags)
-        {
-            return CreateRegistrationAsync(new MpnsTemplateRegistrationDescription(new Uri(channelUri), xmlTemplate, tags));
-        }
 
         /// <summary>
         /// Asynchronously creates a registration.
@@ -2933,9 +2517,6 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += "messages/$batch";
             AddToQuery(requestUri, "&direct");
 
-            // Convert FcmNotification into GcmNotification
-            notification = FcmToGcmNotificationTypeCast(notification);
-
             notification.ValidateAndPopulateHeaders();
 
             return await _retryPolicy.RunOperation(async (ct) =>
@@ -3018,9 +2599,6 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 AddToQuery(requestUri, "&direct");
             }
-
-            // Convert FcmNotification into GcmNotification
-            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -3122,9 +2700,6 @@ namespace Microsoft.Azure.NotificationHubs
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "schedulednotifications";
-
-            // Convert FcmNotification into GcmNotification
-            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -3434,23 +3009,14 @@ namespace Microsoft.Azure.NotificationHubs
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
+
+                        // Registrations of retired platforms (e.g. GCM, MPNS) may still be stored
+                        if (!_entitySerializer.CanDeserialize(xmlReader.Name))
+                        {
+                            continue;
+                        }
+
                         var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
-
-#pragma warning disable CS0618
-
-                        if (entity is GcmTemplateRegistrationDescription)
-                        {
-                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
-                            entity = (fcmTemplateRegistrationDescription as TEntity);
-                        }
-                        
-                        if (entity is GcmRegistrationDescription)
-                        {
-                            var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
-                            entity = (fcmRegistrationDescription as TEntity);
-                        }
-
-#pragma warning restore CS0618
 
                         result.Add(entity);
                     }
@@ -3474,27 +3040,6 @@ namespace Microsoft.Azure.NotificationHubs
                 xmlReader.ReadStartElement();
 
                 var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
-
-#pragma warning disable CS0618
-
-                if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
-                {
-                    return (TEntity)entity;
-                }
-
-                if (entity is GcmTemplateRegistrationDescription gcmTemplateRegistrationDescription)
-                {
-                    var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationDescription);
-                    return (fcmTemplateRegistrationDescription as TEntity);
-                }
-
-                if (entity is GcmRegistrationDescription gcmRegistrationDescription)
-                {
-                    var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationDescription);
-                    return (fcmRegistrationDescription as TEntity);
-                }
-
-#pragma warning restore CS0618
 
                 return (TEntity)entity;
             }
@@ -3529,19 +3074,5 @@ namespace Microsoft.Azure.NotificationHubs
                 uriBuilder.Query = uriBuilder.Query.Substring(1) + query;
             }
         }
-
-#pragma warning disable CS0618  
-
-        private static Notification FcmToGcmNotificationTypeCast(Notification notification)
-        {
-            if (notification.GetType().Name == "FcmNotification")
-            {
-                notification = new GcmNotification((FcmNotification) notification);
-            }
-
-            return notification;
-        }
-
-#pragma warning restore CS0618
     }
 }

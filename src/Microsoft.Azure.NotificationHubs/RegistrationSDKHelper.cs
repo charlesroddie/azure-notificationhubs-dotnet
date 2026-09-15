@@ -1,12 +1,11 @@
-﻿//----------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//----------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Xml;
 
@@ -23,60 +22,9 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 windowsTemplateRegistration.SetWnsType();
             }
-            else
-            {
-                var mpnsTemplateRegistration = registration as MpnsTemplateRegistrationDescription;
-                if (mpnsTemplateRegistration != null)
-                {
-                    mpnsTemplateRegistration.SetMpnsType();
-                }
-            }
 
             // validate
             registration.Validate();
-        }
-
-        /// <summary>
-        /// Find type from xml string, and it should set to WnsHeaders["X-WNS-Type"];
-        /// If the header already there, this function won't overwrite.
-        /// </summary>
-        private static void SetMpnsType(this MpnsTemplateRegistrationDescription registration)
-        {
-            if (registration == null || registration.IsJsonObjectPayLoad())
-            {
-                return;
-            }
-
-            if (registration.MpnsHeaders != null && registration.MpnsHeaders.ContainsKey(MpnsRegistrationDescription.NotificationClass))
-            {
-                int notificationClass = Int32.Parse(registration.MpnsHeaders[MpnsRegistrationDescription.NotificationClass], CultureInfo.InvariantCulture);
-                if ((notificationClass >= 3 && notificationClass <= 10) ||
-                    (notificationClass >= 13 && notificationClass <= 20) ||
-                    (notificationClass >= 23 && notificationClass <= 31))
-
-                    // raw type
-                    return;
-            }
-
-            if(registration.IsXmlPayLoad())
-            {
-                if (registration.MpnsHeaders == null)
-                {
-                    registration.MpnsHeaders = new MpnsHeaderCollection();
-                }
-
-                switch (DetectMpnsTemplateRegistationType(registration.BodyTemplate, SRClient.NotSupportedXMLFormatAsBodyTemplateForMpns))
-                {
-                    case MpnsTemplateBodyType.Tile:
-                        AddOrUpdateHeader(registration.MpnsHeaders, MpnsRegistrationDescription.Type, MpnsRegistrationDescription.Tile);
-                        AddOrUpdateHeader(registration.MpnsHeaders, MpnsRegistrationDescription.NotificationClass, MpnsRegistrationDescription.TileClass);
-                        break;
-                    case MpnsTemplateBodyType.Toast:
-                        AddOrUpdateHeader(registration.MpnsHeaders, MpnsRegistrationDescription.Type, MpnsRegistrationDescription.Toast);
-                        AddOrUpdateHeader(registration.MpnsHeaders, MpnsRegistrationDescription.NotificationClass, MpnsRegistrationDescription.ToastClass);
-                        break;
-                }
-            }
         }
 
         /// <summary>
@@ -89,7 +37,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 return;
             }
-            
+
             if (registration.IsXmlPayLoad())
             {
                 if (registration.WnsHeaders == null)
@@ -181,50 +129,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        public static MpnsTemplateBodyType DetectMpnsTemplateRegistationType(string body, string errorMsg)
-        {
-            XmlDocument xmlPayload = new XmlDocument();
-            using (var reader = XmlTextReader.Create(new StringReader(body)))
-            {
-                try
-                {
-                    xmlPayload.Load(reader);
-                }
-                catch (XmlException)
-                {
-                    throw new ArgumentException(errorMsg);
-                }
-
-                XmlNode node = xmlPayload.FirstChild;
-                while (node != null && node.NodeType != XmlNodeType.Element)
-                {
-                    node = node.NextSibling;
-                }
-
-                if (node == null)
-                {
-                    throw new ArgumentException(errorMsg);
-                }
-
-                // notification node
-                if (!node.NamespaceURI.Equals(MpnsRegistrationDescription.NamespaceName, StringComparison.OrdinalIgnoreCase) ||
-                    !node.LocalName.Equals(MpnsRegistrationDescription.NotificationElementName, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new ArgumentException(errorMsg);
-                }
-
-                // type node
-                XmlNode typeNode = node.FirstChild;
-                MpnsTemplateBodyType registrationType;
-                if (typeNode == null || !Enum.TryParse(typeNode.LocalName, true, out registrationType))
-                {
-                    throw new ArgumentException(errorMsg);
-                }
-
-                return registrationType;
-            }
-        }
-
         public static string AddDeclarationToXml(string content)
         {
             XmlDocument xmlPayload = new XmlDocument();
@@ -249,13 +153,6 @@ namespace Microsoft.Azure.NotificationHubs
         Toast,
         Tile,
         Badge,
-        Raw
-    }
-
-    internal enum MpnsTemplateBodyType
-    {
-        Toast,
-        Tile,   
         Raw
     }
 }

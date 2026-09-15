@@ -75,26 +75,6 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
-        public void CanCreateFcmInstallation()
-        {
-            var installation = new FcmInstallation();
-
-            Assert.Equal(NotificationPlatform.Fcm, installation.Platform);
-        }
-
-        [Fact]
-        public void CanCreateFcmInstallationWithRegistrationId()
-        {
-            const string FcmRegistrationId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
-
-            var installation = new FcmInstallation(InstallationId, FcmRegistrationId);
-
-            Assert.Equal(InstallationId, installation.InstallationId);
-            Assert.Equal(FcmRegistrationId, installation.PushChannel);
-            Assert.Equal(NotificationPlatform.Fcm, installation.Platform);
-        }
-
-        [Fact]
         public void CanCreateFcmV1Installation()
         {
             var installation = new FcmV1Installation();
@@ -132,25 +112,6 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(ChannelUri, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Wns, installation.Platform);
-        }
-
-        [Fact]
-        public void CanCreateWindowsPhoneInstallation()
-        {
-            var installation = new WindowsPhoneInstallation();
-
-            Assert.Equal(NotificationPlatform.Mpns, installation.Platform);
-        }
-
-        [Fact]
-        public void CanCreateWindowsPhoneInstallationWithChannelUri()
-        {
-            const string ChannelUri = "https://notify.windows.net";
-
-            var installation = new WindowsPhoneInstallation(InstallationId, ChannelUri);
-
-            Assert.Equal(ChannelUri, installation.PushChannel);
-            Assert.Equal(NotificationPlatform.Mpns, installation.Platform);
         }
 
         [Fact]
