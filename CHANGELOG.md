@@ -1,9 +1,12 @@
 # Changelog
 
-## Unreleased
+## 5.0.0
+
+First release as `AzureNotificationHubs.Community`, forked from `Microsoft.Azure.NotificationHubs` 4.2.0.
 
 ### Breaking changes
 
+- The package ID is `AzureNotificationHubs.Community`. The namespace and assembly name are unchanged, so do not reference both packages.
 - Retired platforms removed: MPNS (Windows Phone), GCM and legacy FCM. Use FCM V1. `NotificationPlatform.Fcm` is replaced by the obsolete `NotificationPlatform.Gcm`, kept with `Mpns` for reading stored installations.
 - Targets `netstandard2.0` and `net10.0`; `netstandard2.1` and `net6.0` are removed.
 - Exceptions are no longer `[Serializable]`.

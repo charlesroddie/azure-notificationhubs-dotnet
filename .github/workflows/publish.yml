@@ -1,0 +1,34 @@
+name: Publish
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # nuget.org trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Check tag matches project version
+        run: |
+          version=$(dotnet msbuild src/Microsoft.Azure.NotificationHubs/Microsoft.Azure.NotificationHubs.csproj -getProperty:Version)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match project version $version"
+            exit 1
+          fi
+      - run: dotnet build Microsoft.Azure.NotificationHubs.sln -c Release -p:GeneratePackageOnBuild=false
+      - run: dotnet test Microsoft.Azure.NotificationHubs.sln -c Release --no-build
+      - run: dotnet publish src/Microsoft.Azure.NotificationHubs.AotCheck/Microsoft.Azure.NotificationHubs.AotCheck.csproj -c Release -r linux-x64 -o aot
+      - run: ./aot/Microsoft.Azure.NotificationHubs.AotCheck
+      - run: dotnet pack src/Microsoft.Azure.NotificationHubs/Microsoft.Azure.NotificationHubs.csproj -c Release --no-build -o nupkgs
+      - uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - run: dotnet nuget push "nupkgs/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

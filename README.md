@@ -1,8 +1,8 @@
-[![NuGet](https://img.shields.io/nuget/v/Microsoft.Azure.NotificationHubs.svg)](https://www.nuget.org/packages/Microsoft.Azure.NotificationHubs/)
+[![NuGet](https://img.shields.io/nuget/v/AzureNotificationHubs.Community.svg)](https://www.nuget.org/packages/AzureNotificationHubs.Community/)
 
-# .NET Client for Azure Notification Hubs
+# .NET Client for Azure Notification Hubs (community fork)
 
-This repository contains source code for Azure Notification Hubs .NET SDK.  This library is also available via NuGet as part of [`Microsoft.Azure.NotificationHubs`](https://www.nuget.org/packages/Microsoft.Azure.NotificationHubs/).
+An unofficial, community-maintained fork of [`Microsoft.Azure.NotificationHubs`](https://github.com/Azure/azure-notificationhubs-dotnet), published as [`AzureNotificationHubs.Community`](https://www.nuget.org/packages/AzureNotificationHubs.Community/). It is Native AOT compatible, has no Newtonsoft.Json or DataContractSerializer dependency, and drops retired platforms. The namespace is unchanged, so migrating means replacing the package reference. See the [changelog](https://github.com/SummaticLtd/azure-notificationhubs-dotnet/blob/main/CHANGELOG.md) for breaking changes.
 
 Table of Contents:
 
@@ -43,7 +43,7 @@ Table of Contents:
 
 ## Building Code
 
-To build the `Microsoft.Azure.NotificationHubs`, you need support for [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  This requires a minimum of .NET Core 3.1, .NET Framework 4.6.2 or Mono 5.4.  This project ships with two unit test files, one for .NET Core 6.0, and one for .NET Framework 4.6.2 or Mono. This library ships binaries for .NET Standard 2.0, .NET Standard 2.1 and .NET 6.0.
+Building requires the .NET SDK in `global.json`. The library targets .NET Standard 2.0 and .NET 10.0; tests run on .NET 10.0.
 
 ## Getting Started
 
@@ -386,8 +386,4 @@ var allJobs = await hub.GetNotificationHubJobsAsync()
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+Issues and pull requests are welcome. Contributions are accepted under the MIT license. If you would like to help maintain the project, say so in an issue.
