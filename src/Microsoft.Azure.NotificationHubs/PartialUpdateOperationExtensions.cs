@@ -1,12 +1,12 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -15,7 +15,7 @@ namespace Microsoft.Azure.NotificationHubs
         internal static string ToJson(this IList<PartialUpdateOperation> operations)
         {
             if (operations == null) throw new ArgumentNullException("operations");
-            return JsonConvert.SerializeObject(operations);
+            return JsonSerializer.Serialize(operations, NotificationHubsJsonContext.Instance.PartialUpdateOperationList);
         }
     }
 }

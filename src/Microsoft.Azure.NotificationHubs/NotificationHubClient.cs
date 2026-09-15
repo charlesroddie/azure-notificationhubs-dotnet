@@ -4,7 +4,7 @@
 // license information.
 //----------------------------------------------------------------
 
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1235,7 +1235,7 @@ namespace Microsoft.Azure.NotificationHubs
                     using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
                     {
                         var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        return JsonConvert.DeserializeObject<Installation>(responseContent);
+                        return Installation.FromJson(responseContent);
                     }
                 }
             }, cancellationToken);
@@ -2536,7 +2536,7 @@ namespace Microsoft.Azure.NotificationHubs
                     notificationContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "notification" };
                     content.Add(notificationContent);
 
-                    var devicesContent = new StringContent(JsonConvert.SerializeObject(deviceHandles), Encoding.UTF8, "application/json");
+                    var devicesContent = new StringContent(JsonSerializer.Serialize(deviceHandles, NotificationHubsJsonContext.Instance.StringList), Encoding.UTF8, "application/json");
                     devicesContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "devices" };
                     content.Add(devicesContent);
 

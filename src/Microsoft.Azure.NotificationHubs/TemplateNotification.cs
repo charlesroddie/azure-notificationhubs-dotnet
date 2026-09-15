@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -69,7 +69,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()
         {
-            this.Body = JsonConvert.SerializeObject(this.templateProperties);
+            this.Body = JsonSerializer.Serialize(this.templateProperties, NotificationHubsJsonContext.Instance.StringDictionary);
         }
     }
 }

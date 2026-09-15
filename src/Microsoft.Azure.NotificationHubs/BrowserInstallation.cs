@@ -46,7 +46,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(browserPushSubscription.Auth));
             }
 
-            PushChannel = JsonSerializer.Serialize(browserPushSubscription);
+            PushChannel = JsonSerializer.Serialize(browserPushSubscription, NotificationHubsJsonContext.Instance.BrowserPushSubscription);
         }
     }
 }

@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using RichardSzalay.MockHttp;
 using Xunit;
 
@@ -39,9 +38,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         [InlineData("mpns")]
         public void InstallationWithRetiredPlatformCanBeRead(string platform)
         {
-            var installation = JsonConvert.DeserializeObject<Installation>($"{{\"installationId\":\"id\",\"platform\":\"{platform}\",\"pushChannel\":\"token\"}}");
+            var installation = Installation.FromJson($"{{\"installationId\":\"id\",\"platform\":\"{platform}\",\"pushChannel\":\"token\"}}");
 
-            Assert.Equal(platform, JsonConvert.SerializeObject(installation.Platform, new Newtonsoft.Json.Converters.StringEnumConverter()).Trim('"'));
+            Assert.Contains($"\"platform\":\"{platform}\"", installation.ToJson());
         }
     }
 }
