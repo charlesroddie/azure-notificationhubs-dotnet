@@ -130,6 +130,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.MessageType, IsRequired = false, Order = 3003, EmitDefaultValue = false)]
         public int? MessageType { get; set; }
 
+        internal BaiduTemplateRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] BaiduTemplateXmlMembers = XmlMember.Extend(BaiduXmlMembers,
+            XmlMember.Create<BaiduTemplateRegistrationDescription>(ManagementStrings.BodyTemplate, (w, n, o) => XmlContract.WriteCData(w, n, o.BodyTemplate), (o, e) => o.BodyTemplate = XmlContract.ReadCData(e)),
+            XmlMember.Create<BaiduTemplateRegistrationDescription>(ManagementStrings.TemplateName, (w, n, o) => XmlContract.WriteString(w, n, o.TemplateName, true), (o, e) => o.TemplateName = XmlContract.ReadString(e)),
+            XmlMember.Create<BaiduTemplateRegistrationDescription>(ManagementStrings.MessageType, (w, n, o) => XmlContract.WriteInt(w, n, o.MessageType), (o, e) => o.MessageType = XmlContract.ReadInt(e)));
+
+        internal override XmlMember[] XmlMembers => BaiduTemplateXmlMembers;
+
         internal override string AppPlatForm
         {
             get

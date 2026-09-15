@@ -284,6 +284,18 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         [DataMember(Name = ManagementStrings.SecondaryKey, IsRequired = false, Order = 1003, EmitDefaultValue = false)]
         internal string InternalSecondaryKey { get; set; }
 
+        internal static readonly XmlMember[] SharedAccessXmlMembers = XmlMember.Extend(AuthorizationRuleXmlMembers,
+            XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.KeyName, (w, n, o) => XmlContract.WriteString(w, n, o.InternalKeyName, false), (o, e) => o.InternalKeyName = XmlContract.ReadString(e)),
+            XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.PrimaryKey, (w, n, o) => XmlContract.WriteString(w, n, o.InternalPrimaryKey, false), (o, e) => o.InternalPrimaryKey = XmlContract.ReadString(e)),
+            XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.SecondaryKey, (w, n, o) => XmlContract.WriteString(w, n, o.InternalSecondaryKey, false), (o, e) => o.InternalSecondaryKey = XmlContract.ReadString(e)));
+
+        internal static SharedAccessAuthorizationRule CreateForXml()
+        {
+            var rule = new SharedAccessAuthorizationRule();
+            rule.ClearRevisionInfo();
+            return rule;
+        }
+
         /// <summary>
         /// Generates a Random base 64 encoded Key with crypto apis
         /// </summary>

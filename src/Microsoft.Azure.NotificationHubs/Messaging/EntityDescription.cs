@@ -1,20 +1,22 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Xml.Linq;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     /// <summary>
-    /// This represent the base abstract class for all the entity Description classes. 
-    /// Mainly contain the read-only mechanics. This class is not meant to be used 
+    /// This represent the base abstract class for all the entity Description classes.
+    /// Mainly contain the read-only mechanics. This class is not meant to be used
     /// or inherited by external customers.
     /// </summary>
-    [DataContract(Namespace = ManagementStrings.Namespace)]    
+    [DataContract(Namespace = ManagementStrings.Namespace)]
     public abstract class EntityDescription : IExtensibleDataObject
     {
         // remarks: constructor is marked internal to prevent
@@ -32,12 +34,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public bool IsReadOnly { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the structure that contains extra data.
+        /// Gets or sets the structure that contains extra data. This library does not populate it.
         /// </summary>
         /// <value>
         /// Information describing the extension.
         /// </value>
         public ExtensionDataObject ExtensionData { get; set; }
+
+        // Elements from the service that this library does not model, written back unchanged
+        internal List<(int Position, XElement Element)> UnknownXmlElements { get; set; }
+
+        internal virtual XmlMember[] XmlMembers => null;
 
         // This should return true if the description contains any secrets like SharedAccessKey.
         internal virtual bool RequiresEncryption

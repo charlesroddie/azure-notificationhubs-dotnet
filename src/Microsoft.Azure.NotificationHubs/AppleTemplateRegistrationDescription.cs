@@ -170,6 +170,19 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.ApnsHeaders, IsRequired = false, Order = 3005, EmitDefaultValue = false)]
         public ApnsHeaderCollection ApnsHeaders { get; set; }
 
+        internal AppleTemplateRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] AppleTemplateXmlMembers = XmlMember.Extend(AppleXmlMembers,
+            XmlMember.Create<AppleTemplateRegistrationDescription>(ManagementStrings.BodyTemplate, (w, n, o) => XmlContract.WriteCData(w, n, o.BodyTemplate), (o, e) => o.BodyTemplate = XmlContract.ReadCData(e)),
+            XmlMember.Create<AppleTemplateRegistrationDescription>(ManagementStrings.Expiry, (w, n, o) => XmlContract.WriteString(w, n, o.Expiry, true), (o, e) => o.Expiry = XmlContract.ReadString(e)),
+            XmlMember.Create<AppleTemplateRegistrationDescription>(ManagementStrings.TemplateName, (w, n, o) => XmlContract.WriteString(w, n, o.TemplateName, true), (o, e) => o.TemplateName = XmlContract.ReadString(e)),
+            XmlMember.Create<AppleTemplateRegistrationDescription>(ManagementStrings.Priority, (w, n, o) => XmlContract.WriteString(w, n, o.Priority, false), (o, e) => o.Priority = XmlContract.ReadString(e)),
+            XmlMember.Create<AppleTemplateRegistrationDescription>(ManagementStrings.ApnsHeaders, (w, n, o) => XmlContract.WriteStringDictionary(w, n, o.ApnsHeaders, ManagementStrings.ApnsHeader, "Header", "Value", false), (o, e) => o.ApnsHeaders = XmlContract.ReadStringDictionary(e, new ApnsHeaderCollection(), "Header", "Value")));
+
+        internal override XmlMember[] XmlMembers => AppleTemplateXmlMembers;
+
         internal override void OnValidate()
         {
             base.OnValidate();

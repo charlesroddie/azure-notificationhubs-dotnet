@@ -70,5 +70,13 @@ namespace Microsoft.Azure.NotificationHubs
             get;
             set;
         }
+
+        internal static readonly XmlMember[] XmlMembers =
+        {
+            XmlMember.Create<RegistrationResult>(ManagementStrings.ApplicationPlatform, (w, n, o) => XmlContract.WriteString(w, n, o.ApplicationPlatform, true), (o, e) => o.ApplicationPlatform = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationResult>(ManagementStrings.PnsHandle, (w, n, o) => XmlContract.WriteString(w, n, o.PnsHandle, true), (o, e) => o.PnsHandle = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationResult>(ManagementStrings.RegistrationId, (w, n, o) => XmlContract.WriteString(w, n, o.RegistrationId, true), (o, e) => o.RegistrationId = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationResult>(ManagementStrings.Outcome, (w, n, o) => XmlContract.WriteString(w, n, o.Outcome, true), (o, e) => o.Outcome = XmlContract.ReadString(e)),
+        };
     }
 }

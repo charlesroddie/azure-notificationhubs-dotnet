@@ -399,6 +399,29 @@ namespace Microsoft.Azure.NotificationHubs
             set;
         }
 
+        internal NotificationHubDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] HubXmlMembers =
+        {
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.ApnsCredential, (w, n, o) => XmlContract.WriteNested(w, n, o.ApnsCredential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.ApnsCredential = XmlContract.ReadNested(e, new ApnsCredential(), PnsCredential.CredentialXmlMembers)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.RegistrationTtl, (w, n, o) => XmlContract.WriteTimeSpan(w, n, o.InternalRegistrationTtl), (o, e) => o.InternalRegistrationTtl = XmlContract.ReadTimeSpan(e)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.WnsCredential, (w, n, o) => XmlContract.WriteNested(w, n, o.WnsCredential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.WnsCredential = XmlContract.ReadNested(e, new WnsCredential(), PnsCredential.CredentialXmlMembers)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.AuthorizationRules, (w, n, o) => AuthorizationRules.WriteXml(w, n, o.InternalAuthorization), (o, e) => o.InternalAuthorization = AuthorizationRules.ReadXml(e)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.DailyOperations, (w, n, o) => XmlContract.WriteLong(w, n, o.DailyOperations == 0 ? (long?)null : o.DailyOperations), (o, e) => o.DailyOperations = XmlContract.ReadLong(e) ?? 0),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.DailyMaxActiveDevices, (w, n, o) => XmlContract.WriteLong(w, n, o.DailyMaxActiveDevices == 0 ? (long?)null : o.DailyMaxActiveDevices), (o, e) => o.DailyMaxActiveDevices = XmlContract.ReadLong(e) ?? 0),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.DailyMaxActiveRegistrations, (w, n, o) => XmlContract.WriteLong(w, n, o.DailyMaxActiveRegistrations == 0 ? (long?)null : o.DailyMaxActiveRegistrations), (o, e) => o.DailyMaxActiveRegistrations = XmlContract.ReadLong(e) ?? 0),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.UserMetadata, (w, n, o) => XmlContract.WriteString(w, n, o.InternalUserMetadata, false), (o, e) => o.InternalUserMetadata = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.AdmCredential, (w, n, o) => XmlContract.WriteNested(w, n, o.AdmCredential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.AdmCredential = XmlContract.ReadNested(e, new AdmCredential(), PnsCredential.CredentialXmlMembers)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.BaiduCredential, (w, n, o) => XmlContract.WriteNested(w, n, o.BaiduCredential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.BaiduCredential = XmlContract.ReadNested(e, new BaiduCredential(), PnsCredential.CredentialXmlMembers)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.Status, (w, n, o) => XmlContract.WriteBool(w, n, o.InternalStatus), (o, e) => o.InternalStatus = XmlContract.ReadBool(e)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.FcmV1Credential, (w, n, o) => XmlContract.WriteNested(w, n, o.FcmV1Credential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.FcmV1Credential = XmlContract.ReadNested(e, new FcmV1Credential(), PnsCredential.CredentialXmlMembers)),
+            XmlMember.Create<NotificationHubDescription>(ManagementStrings.BrowserCredential, (w, n, o) => XmlContract.WriteNested(w, n, o.BrowserCredential, PnsCredential.CredentialXmlMembers, false), (o, e) => o.BrowserCredential = XmlContract.ReadNested(e, new BrowserCredential(), PnsCredential.CredentialXmlMembers)),
+        };
+
+        internal override XmlMember[] XmlMembers => HubXmlMembers;
+
         /// <summary>
         ///   Gets/Sets any User Metadata associated with the NotificationHub.
         /// </summary>

@@ -34,8 +34,6 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly HttpClient _httpClient;
 
         private readonly Uri _baseUri;
-        private readonly DataContractSerializer _debugResponseSerializer = new DataContractSerializer(typeof(NotificationOutcome));
-        private readonly DataContractSerializer _notificationDetailsSerializer = new DataContractSerializer(typeof(NotificationDetails));
         private readonly EntityDescriptionSerializer _entitySerializer = new EntityDescriptionSerializer();
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
@@ -927,7 +925,7 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                         {
-                            return (NotificationDetails)_notificationDetailsSerializer.ReadObject(responseStream);
+                            return NotificationDetails.FromXml(responseStream);
                         }
                     }
                 }
@@ -2632,7 +2630,7 @@ namespace Microsoft.Azure.NotificationHubs
                             using (var responseContent = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                             using (var reader = XmlReader.Create(responseContent, new XmlReaderSettings { CloseInput = true }))
                             {
-                                var result = (NotificationOutcome)_debugResponseSerializer.ReadObject(reader);
+                                var result = NotificationOutcome.FromXml(reader);
                                 result.State = NotificationOutcomeState.DetailedStateAvailable;
                                 result.TrackingId = trackingId;
                                 return result;

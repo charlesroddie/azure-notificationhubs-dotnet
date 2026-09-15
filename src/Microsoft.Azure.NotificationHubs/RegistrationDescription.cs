@@ -295,13 +295,25 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="descriptionString">The description associated with the registration.</param>
         public static RegistrationDescription Deserialize(string descriptionString)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(RegistrationDescription));
-
             using (XmlReader xmlReader = XmlReader.Create(new StringReader(descriptionString)))
             {
-                return (RegistrationDescription)serializer.ReadObject(xmlReader);
+                xmlReader.MoveToContent();
+                return (RegistrationDescription)new EntityDescriptionSerializer().Deserialize(xmlReader, xmlReader.LocalName);
             }
         }
+
+        internal RegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] RegistrationXmlMembers =
+        {
+            XmlMember.Create<RegistrationDescription>(ManagementStrings.ETag, (w, n, o) => XmlContract.WriteString(w, n, o.ETag, false), (o, e) => o.ETag = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationDescription>(ManagementStrings.ExpirationTime, (w, n, o) => XmlContract.WriteDateTime(w, n, o.ExpirationTime), (o, e) => o.ExpirationTime = XmlContract.ReadDateTime(e)),
+            XmlMember.Create<RegistrationDescription>(ManagementStrings.RegistrationId, (w, n, o) => XmlContract.WriteString(w, n, o.RegistrationId, true), (o, e) => o.RegistrationId = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationDescription>(ManagementStrings.Tags, (w, n, o) => XmlContract.WriteString(w, n, o.TagsString, false), (o, e) => o.TagsString = XmlContract.ReadString(e)),
+            XmlMember.Create<RegistrationDescription>(ManagementStrings.PushVariables, (w, n, o) => XmlContract.WriteString(w, n, o.PropertyBagString, false), (o, e) => o.PropertyBagString = XmlContract.ReadString(e)),
+        };
 
         internal void Validate(bool checkExpirationTime = true)
         {

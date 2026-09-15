@@ -72,6 +72,15 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.AdmRegistrationId, Order = 2001, IsRequired = true)]
         public string AdmRegistrationId { get; set; }
 
+        internal AdmRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] AdmXmlMembers = XmlMember.Extend(RegistrationXmlMembers,
+            XmlMember.Create<AdmRegistrationDescription>(ManagementStrings.AdmRegistrationId, (w, n, o) => XmlContract.WriteString(w, n, o.AdmRegistrationId, true), (o, e) => o.AdmRegistrationId = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => AdmXmlMembers;
+
         internal override string AppPlatForm
         {
             get

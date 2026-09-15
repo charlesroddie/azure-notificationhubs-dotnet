@@ -9,6 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
@@ -18,13 +20,42 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     [CollectionDataContract(
         Name = ManagementStrings.AuthorizationRules,
         ItemName = "AuthorizationRule",
-        Namespace = ManagementStrings.Namespace)]    
+        Namespace = ManagementStrings.Namespace)]
     public class AuthorizationRules : ICollection<AuthorizationRule>
     {
-        /// <summary>
-        /// The serializer
-        /// </summary>
-        public static readonly DataContractSerializer Serializer = new DataContractSerializer(typeof(AuthorizationRules));
+        const string ItemName = "AuthorizationRule";
+
+        internal static void WriteXml(XmlWriter writer, string name, AuthorizationRules rules) =>
+            XmlContract.WriteList(writer, name, rules, ItemName, (w, itemName, rule) =>
+            {
+                if (rule != null && !(rule is SharedAccessAuthorizationRule))
+                {
+                    throw new SerializationException($"Unsupported authorization rule type {rule.GetType().Name}.");
+                }
+
+                XmlContract.WriteNested(w, itemName, rule, SharedAccessAuthorizationRule.SharedAccessXmlMembers, true, nameof(SharedAccessAuthorizationRule));
+            }, false);
+
+        internal static AuthorizationRules ReadXml(XElement element)
+        {
+            var rules = XmlContract.ReadList(element, item =>
+            {
+                if (XmlContract.IsNil(item))
+                {
+                    return null;
+                }
+
+                if (XmlContract.ReadInstanceType(item) != nameof(SharedAccessAuthorizationRule))
+                {
+                    throw new SerializationException($"Unsupported authorization rule type {XmlContract.ReadInstanceType(item)}.");
+                }
+
+                return (AuthorizationRule)XmlContract.ReadNested(item, SharedAccessAuthorizationRule.CreateForXml(), SharedAccessAuthorizationRule.SharedAccessXmlMembers);
+            });
+
+            return rules == null ? null : new AuthorizationRules(rules);
+        }
+
         /// <summary>
         /// The inner collection
         /// </summary>

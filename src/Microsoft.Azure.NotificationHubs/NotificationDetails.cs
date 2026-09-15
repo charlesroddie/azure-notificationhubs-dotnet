@@ -1,11 +1,14 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
 using System;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Linq;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -153,11 +156,45 @@ namespace Microsoft.Azure.NotificationHubs
         public string PnsErrorDetailsUri { get; set; }
 
         /// <summary>
-        /// Gets or sets the structure that contains extra data.
+        /// Gets or sets the structure that contains extra data. This library does not populate it.
         /// </summary>
         /// <value>
         /// Information describing the extension.
         /// </value>
         public ExtensionDataObject ExtensionData { get; set; }
+
+        static readonly XmlMember[] XmlMembers =
+        {
+            XmlMember.Create<NotificationDetails>(ManagementStrings.NotificationId, (w, n, o) => XmlContract.WriteString(w, n, o.NotificationId, false), (o, e) => o.NotificationId = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.Location, (w, n, o) => XmlContract.WriteUri(w, n, o.Location, false), (o, e) => o.Location = XmlContract.ReadUri(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.State, (w, n, o) => XmlContract.WriteString(w, n, o.NotificationState, true), (o, e) => o.NotificationState = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.EnqueueTime, (w, n, o) => XmlContract.WriteDateTime(w, n, o.EnqueueTime), (o, e) => o.EnqueueTime = XmlContract.ReadDateTime(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.StartTime, (w, n, o) => XmlContract.WriteDateTime(w, n, o.StartTime), (o, e) => o.StartTime = XmlContract.ReadDateTime(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.EndTime, (w, n, o) => XmlContract.WriteDateTime(w, n, o.EndTime), (o, e) => o.EndTime = XmlContract.ReadDateTime(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.NotificationBody, (w, n, o) => XmlContract.WriteString(w, n, o.NotificationBody, false), (o, e) => o.NotificationBody = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.Tags, (w, n, o) => XmlContract.WriteString(w, n, o.Tags, false), (o, e) => o.Tags = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.TargetPlatforms, (w, n, o) => XmlContract.WriteString(w, n, o.TargetPlatforms, false), (o, e) => o.TargetPlatforms = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.ApnsOutcomeCounts, (w, n, o) => WriteCounts(w, n, o.ApnsOutcomeCounts), (o, e) => o.ApnsOutcomeCounts = ReadCounts(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.WnsOutcomeCounts, (w, n, o) => WriteCounts(w, n, o.WnsOutcomeCounts), (o, e) => o.WnsOutcomeCounts = ReadCounts(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.AdmOutcomeCounts, (w, n, o) => WriteCounts(w, n, o.AdmOutcomeCounts), (o, e) => o.AdmOutcomeCounts = ReadCounts(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.PnsErrorDetailsUri, (w, n, o) => XmlContract.WriteString(w, n, o.PnsErrorDetailsUri, false), (o, e) => o.PnsErrorDetailsUri = XmlContract.ReadString(e)),
+            XmlMember.Create<NotificationDetails>(ManagementStrings.FcmV1OutcomeCounts, (w, n, o) => WriteCounts(w, n, o.FcmV1OutcomeCounts), (o, e) => o.FcmV1OutcomeCounts = ReadCounts(e)),
+        };
+
+        static void WriteCounts(XmlWriter writer, string name, NotificationOutcomeCollection counts) =>
+            XmlContract.WriteDictionary(writer, name, counts, "Outcome", "Name", "Count", (w, n, count) => XmlContract.WriteLong(w, n, count), false);
+
+        static NotificationOutcomeCollection ReadCounts(XElement element) =>
+            XmlContract.ReadDictionary(element, new NotificationOutcomeCollection(), "Name", "Count", count => XmlContract.ReadLong(count) ?? 0);
+
+        internal static NotificationDetails FromXml(Stream stream)
+        {
+            using (var reader = XmlReader.Create(stream))
+            {
+                var details = new NotificationDetails();
+                XmlContract.ReadMembers(XmlContract.ReadElement(reader, ManagementStrings.NotificationDetails), details, XmlMembers);
+                return details;
+            }
+        }
     }
 }

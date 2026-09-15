@@ -144,6 +144,16 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.SecondaryTileName, Order = 2002, IsRequired = false, EmitDefaultValue = false)]
         public string SecondaryTileName { get; set; }
 
+        internal WindowsRegistrationDescription()
+        {
+        }
+
+        internal static readonly XmlMember[] WindowsXmlMembers = XmlMember.Extend(RegistrationXmlMembers,
+            XmlMember.Create<WindowsRegistrationDescription>(ManagementStrings.ChannelUri, (w, n, o) => XmlContract.WriteUri(w, n, o.ChannelUri, true), (o, e) => o.ChannelUri = XmlContract.ReadUri(e)),
+            XmlMember.Create<WindowsRegistrationDescription>(ManagementStrings.SecondaryTileName, (w, n, o) => XmlContract.WriteString(w, n, o.SecondaryTileName, false), (o, e) => o.SecondaryTileName = XmlContract.ReadString(e)));
+
+        internal override XmlMember[] XmlMembers => WindowsXmlMembers;
+
         /// <summary>
         /// Called when validate event occurs.
         /// </summary>
