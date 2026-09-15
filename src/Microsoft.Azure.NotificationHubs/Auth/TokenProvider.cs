@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
@@ -14,9 +15,12 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     /// </summary>
     public abstract class TokenProvider : IDisposable
     {
+        private const int PruneInterval = 100;
+
         private readonly ConcurrentDictionary<string, (string Token, DateTime ExpiresAtUtc)> _tokenCache = new ConcurrentDictionary<string, (string, DateTime)>();
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
+        private int _writesSincePrune;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenProvider"/> class.
@@ -117,7 +121,20 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         {
             if(!bypassCache && _cacheTokens)
             {
-                _tokenCache[BuildKey(appliesTo, action)] = (token, DateTime.UtcNow + _cacheExpirationTime);
+                var now = DateTime.UtcNow;
+                _tokenCache[BuildKey(appliesTo, action)] = (token, now + _cacheExpirationTime);
+
+                if (Interlocked.Increment(ref _writesSincePrune) >= PruneInterval)
+                {
+                    Interlocked.Exchange(ref _writesSincePrune, 0);
+                    foreach (var entry in _tokenCache)
+                    {
+                        if (entry.Value.ExpiresAtUtc <= now)
+                        {
+                            _tokenCache.TryRemove(entry.Key, out _);
+                        }
+                    }
+                }
             }
         }
 
