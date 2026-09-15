@@ -9,6 +9,9 @@ using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    /// <summary>
+    /// Represents the Web Push (VAPID) credential.
+    /// </summary>
     [DataContract(Name = ManagementStrings.BrowserCredential, Namespace = ManagementStrings.Namespace)]
     public class BrowserCredential : PnsCredential
     {

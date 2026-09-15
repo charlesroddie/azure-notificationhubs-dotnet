@@ -15,6 +15,9 @@ using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    /// <summary>
+    /// Represents Notification Hub template registration description for browser Web Push.
+    /// </summary>
     public class BrowserTemplateRegistrationDescription : BrowserRegistrationDescription
     {
         /// <summary>

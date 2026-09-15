@@ -5,12 +5,10 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     /// <summary> Exception for signaling quota exceeded errors. </summary>
-    [Serializable]
     public class QuotaExceededException : MessagingException
     {
         internal readonly TimeSpan DefaultRetryTimeout = TimeSpan.FromSeconds(10);
@@ -22,14 +20,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             base(detail, true)
         {
             RetryAfter = retryAfter ?? DefaultRetryTimeout;
-        }
-
-        /// <summary> Exception Constructor for additional details embedded in a serializable stream. </summary>
-        /// <param name="info">    The serialization information object. </param>
-        /// <param name="context"> The streaming context/source. </param>
-        protected QuotaExceededException(SerializationInfo info, StreamingContext context) :
-            base(info, context)
-        {
         }
     }
 }

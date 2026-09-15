@@ -12,6 +12,9 @@ using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    /// <summary>
+    /// Represents Notification Hub registration description for browser Web Push.
+    /// </summary>
     [DataContract(Name = ManagementStrings.BrowserRegistrationDescription, Namespace = ManagementStrings.Namespace)]
     public class BrowserRegistrationDescription : RegistrationDescription
     {

@@ -1,6 +1,6 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
@@ -8,11 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Azure.NotificationHubs.Tests;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Auth;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Xunit;
@@ -72,12 +72,11 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             {
                 CleanUp();
                 _testServer.RecordingMode = RecordingMode.Recording;
-                var storageEndpoint = new StorageUri(new Uri(storageEndpointAddress));
-                var blobClient = new CloudBlobClient(
-                   storageEndpoint,
-                   new StorageCredentials(storageAccount, storagePassword));
+                var blobServiceClient = new BlobServiceClient(
+                   new Uri(storageEndpointAddress),
+                   new StorageSharedKeyCredential(storageAccount, storagePassword));
 
-                var container = blobClient.GetContainerReference(containerName);
+                var container = blobServiceClient.GetBlobContainerClient(containerName);
 
                 _outputContainerSasUri = GetOutputDirectoryUrl(container);
                 _inputFileSasUri = GetInputFileUrl(container, InputFileName);
@@ -155,7 +154,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Fact]
-        public async void ManagementApi_ShouldReceiveCorrectJobs()
+        public async System.Threading.Tasks.Task ManagementApi_ShouldReceiveCorrectJobs()
         {
             LoadMockData();
             try
@@ -229,28 +228,18 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             }
         }
 
-        private static Uri GetInputFileUrl(CloudBlobContainer container, string filePath)
+        private static Uri GetInputFileUrl(BlobContainerClient container, string filePath)
         {
-            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
-            {
-                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(4),
-                Permissions = SharedAccessBlobPermissions.Write | SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Create
-            };
-
-            var sasToken = container.GetBlockBlobReference(filePath).GetSharedAccessSignature(sasConstraints);
-            return new Uri(container.Uri + "/" + filePath + sasToken);
+            return container.GetBlobClient(filePath).GenerateSasUri(
+                BlobSasPermissions.Write | BlobSasPermissions.Read | BlobSasPermissions.Create,
+                DateTimeOffset.UtcNow.AddHours(4));
         }
 
-        private static Uri GetOutputDirectoryUrl(CloudBlobContainer container)
+        private static Uri GetOutputDirectoryUrl(BlobContainerClient container)
         {
-            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
-            {
-                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(4),
-                Permissions = SharedAccessBlobPermissions.Write | SharedAccessBlobPermissions.List | SharedAccessBlobPermissions.Read
-            };
-
-            string sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
-            return new Uri(container.Uri + sasContainerToken);
+            return container.GenerateSasUri(
+                BlobContainerSasPermissions.Write | BlobContainerSasPermissions.List | BlobContainerSasPermissions.Read,
+                DateTimeOffset.UtcNow.AddHours(4));
         }
 
         private string GetMockDataFilePath(string methodName)

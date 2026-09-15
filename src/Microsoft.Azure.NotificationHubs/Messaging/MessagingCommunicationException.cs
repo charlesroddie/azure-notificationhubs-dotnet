@@ -5,14 +5,12 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     /// <summary>
     /// Exception for signaling general communication errors related to messaging operations.
     /// </summary>
-    [Serializable]
     public sealed class MessagingCommunicationException : MessagingException
     {
         /// <summary>
@@ -23,14 +21,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
         public MessagingCommunicationException(MessagingExceptionDetail message, bool isTransientError, Exception innerException)
             : base(message, isTransientError, innerException)
-        {
-        }
-
-        /// <summary> Constructor. </summary>
-        /// <param name="info">    The information. </param>
-        /// <param name="context"> The context. </param>
-        MessagingCommunicationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }
