@@ -22,18 +22,10 @@ namespace Microsoft.Azure.NotificationHubs
     /// Represents a registration description.
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
-#pragma warning disable CS0618
-    [KnownType(typeof(GcmRegistrationDescription))]
-    [KnownType(typeof(GcmTemplateRegistrationDescription))]
-#pragma warning restore CS0618
-    [KnownType(typeof(FcmRegistrationDescription))]
-    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AppleRegistrationDescription))]
     [KnownType(typeof(AppleTemplateRegistrationDescription))]
     [KnownType(typeof(WindowsRegistrationDescription))]
     [KnownType(typeof(WindowsTemplateRegistrationDescription))]
-    [KnownType(typeof(MpnsRegistrationDescription))]
-    [KnownType(typeof(MpnsTemplateRegistrationDescription))]
     [KnownType(typeof(AdmRegistrationDescription))]
     [KnownType(typeof(AdmTemplateRegistrationDescription))]
     [KnownType(typeof(BaiduRegistrationDescription))]

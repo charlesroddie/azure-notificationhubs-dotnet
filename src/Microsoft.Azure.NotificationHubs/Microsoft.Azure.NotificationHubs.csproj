@@ -16,7 +16,7 @@
     <Description>
       Use this for Microsoft Azure Notification Hubs back end operations.
 
-      It adds Microsoft.Azure.NotificationHubs.dll to your project. Notification Hubs support sending push notifications to Windows, Windows Phone, iOS, Android, Amazon, and Baidu.
+      It adds Microsoft.Azure.NotificationHubs.dll to your project. Notification Hubs support sending push notifications to Windows, iOS, Android, Amazon, Baidu, and web browsers.
 
       For more information on Notification Hub, please visit: http://azure.microsoft.com/en-us/documentation/articles/notification-hubs-overview/
     </Description>
@@ -24,7 +24,7 @@
       Visit https://github.com/Azure/azure-notificationhubs-dotnet/releases for latest release notes.
     </PackageReleaseNotes>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <PackageTags>Microsoft Azure windowsazureofficial NotificationHub Notifications Notification Hub Push Windows Phone iOS Android Baidu Kindle Amazon</PackageTags>
+    <PackageTags>Microsoft Azure windowsazureofficial NotificationHub Notifications Notification Hub Push Windows iOS Android Baidu Kindle Amazon</PackageTags>
     <LangVersion>latest</LangVersion>
     <Configurations>Release;Debug</Configurations>
   </PropertyGroup>

@@ -1357,29 +1357,11 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GcmEndpoint is either not specified or invalid..
-        /// </summary>
-        internal static string GcmEndpointNotSpecified {
-            get {
-                return ResourceManager.GetString("GcmEndpointNotSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to GCM Registration Id is invalid..
         /// </summary>
         internal static string GCMRegistrationInvalidId {
             get {
                 return ResourceManager.GetString("GCMRegistrationInvalidId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only GoogleApiKey and GcmEndpoint are required..
-        /// </summary>
-        internal static string GcmRequiredProperties {
-            get {
-                return ResourceManager.GetString("GcmRequiredProperties", resourceCulture);
             }
         }
         
@@ -1636,15 +1618,6 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid GcmEndpoint specified..
-        /// </summary>
-        internal static string InvalidGcmEndpoint {
-            get {
-                return ResourceManager.GetString("InvalidGcmEndpoint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The ID is invalid..
         /// </summary>
         internal static string InvalidID {
@@ -1686,15 +1659,6 @@ namespace Microsoft.Azure.NotificationHubs {
         internal static string InvalidMethodWhilePeeking {
             get {
                 return ResourceManager.GetString("InvalidMethodWhilePeeking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The certificate specified in mpns credentials is not valid yet..
-        /// </summary>
-        internal static string InvalidMpnsCertificate {
-            get {
-                return ResourceManager.GetString("InvalidMpnsCertificate", resourceCulture);
             }
         }
         
@@ -2167,15 +2131,6 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must contain Mpns Header : &apos;{0}&apos;..
-        /// </summary>
-        internal static string MissingMpnsHeader {
-            get {
-                return ResourceManager.GetString("MissingMpnsHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Must contain WNS Header : &apos;{0}&apos;..
         /// </summary>
         internal static string MissingWNSHeader {
@@ -2199,60 +2154,6 @@ namespace Microsoft.Azure.NotificationHubs {
         internal static string MoreThanOneIPEndPoint {
             get {
                 return ResourceManager.GetString("MoreThanOneIPEndPoint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to use the certificate specified in mpns credentials. The error is  : &apos;{0}&apos;..
-        /// </summary>
-        internal static string MpnsCertificateError {
-            get {
-                return ResourceManager.GetString("MpnsCertificateError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The certificate specified in mpns credentials is expired..
-        /// </summary>
-        internal static string MpnsCertificateExpired {
-            get {
-                return ResourceManager.GetString("MpnsCertificateExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The certificate specified in mpns credentials does not have a private key..
-        /// </summary>
-        internal static string MpnsCertificatePrivatekeyMissing {
-            get {
-                return ResourceManager.GetString("MpnsCertificatePrivatekeyMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MPNS header &apos;{0}&apos; is null or empty..
-        /// </summary>
-        internal static string MpnsHeaderIsNullOrEmpty {
-            get {
-                return ResourceManager.GetString("MpnsHeaderIsNullOrEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MpnsCertificate or CertificateKey is either not specified or invalid..
-        /// </summary>
-        internal static string MpnsInvalidPropeties {
-            get {
-                return ResourceManager.GetString("MpnsInvalidPropeties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only 2 properties MpnsCertificate and CertificateKey are required..
-        /// </summary>
-        internal static string MpnsRequiredPropertiesError {
-            get {
-                return ResourceManager.GetString("MpnsRequiredPropertiesError", resourceCulture);
             }
         }
         
@@ -2392,29 +2293,11 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The bodyTemplate is not in accepted XML format. The first node of the bodyTemplate should be Tile/Toast, except raw template..
-        /// </summary>
-        internal static string NotSupportedXMLFormatAsBodyTemplateForMpns {
-            get {
-                return ResourceManager.GetString("NotSupportedXMLFormatAsBodyTemplateForMpns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The payload is not in accepted XML format. The first node should be Badge/Tile/Toast. If want to send raw notification, please set header to wns/raw..
         /// </summary>
         internal static string NotSupportedXMLFormatAsPayload {
             get {
                 return ResourceManager.GetString("NotSupportedXMLFormatAsPayload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The payload is not in accepted XML format. The first node should be Tile/Toast. If want to send raw notification, please set &quot;X-NotificationClass&quot; to &quot;3&quot; in header..
-        /// </summary>
-        internal static string NotSupportedXMLFormatAsPayloadForMpns {
-            get {
-                return ResourceManager.GetString("NotSupportedXMLFormatAsPayloadForMpns", resourceCulture);
             }
         }
         

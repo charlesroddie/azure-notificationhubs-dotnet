@@ -299,34 +299,6 @@ namespace Microsoft.Azure.NotificationHubs
         internal AuthorizationRules InternalAuthorization { get; set; }
 
         /// <summary>
-        /// Gets or sets the FCM legacy credential.
-        /// </summary>
-        /// 
-        /// <returns>
-        /// The FCM legacy credential.
-        /// </returns>
-        [DataMember(Name = ManagementStrings.GcmCredential, IsRequired = false, EmitDefaultValue = false, Order = 1005)]
-        public FcmCredential FcmCredential
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the MPNS credential. An <see cref="T:Microsoft.Azure.NotificationHubs.MpnsCredential"/> instance with no defined certificate enables MPNS unauthenticated MPNS support.
-        /// </summary>
-        /// 
-        /// <returns>
-        /// The MPNS credential.
-        /// </returns>
-        [DataMember(Name = ManagementStrings.MpnsCredential, IsRequired = false, EmitDefaultValue = false, Order = 1006)]
-        public MpnsCredential MpnsCredential
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets the daily operations for the Notificationhub.
         /// </summary>
         /// 

@@ -1,6 +1,6 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
@@ -41,30 +41,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 typeof(AppleTemplateRegistrationDescription).Name,
                 this.CreateSerializer<AppleTemplateRegistrationDescription>());
 
-#pragma warning disable CS0618
-
-            this.entirySerializers.Add(
-                typeof(GcmRegistrationDescription).Name,
-                this.CreateSerializer<GcmRegistrationDescription>());
-
-#pragma warning restore CS0618
-
-            this.entirySerializers.Add(
-                typeof(FcmRegistrationDescription).Name,
-                this.CreateSerializer<FcmRegistrationDescription>());
-
-#pragma warning disable CS0618
-
-            this.entirySerializers.Add(
-                typeof(GcmTemplateRegistrationDescription).Name,
-                this.CreateSerializer<GcmTemplateRegistrationDescription>());
-
-#pragma warning restore CS0618
-
-            this.entirySerializers.Add(
-                typeof(FcmTemplateRegistrationDescription).Name,
-                this.CreateSerializer<FcmTemplateRegistrationDescription>());
-
             this.entirySerializers.Add(
                 typeof(FcmV1RegistrationDescription).Name,
                 this.CreateSerializer<FcmV1RegistrationDescription>());
@@ -72,14 +48,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.entirySerializers.Add(
                 typeof(FcmV1TemplateRegistrationDescription).Name,
                 this.CreateSerializer<FcmV1TemplateRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(MpnsRegistrationDescription).Name,
-                this.CreateSerializer<MpnsRegistrationDescription>());
-
-            this.entirySerializers.Add(
-                typeof(MpnsTemplateRegistrationDescription).Name,
-                this.CreateSerializer<MpnsTemplateRegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(AdmRegistrationDescription).Name,
@@ -142,21 +110,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             return stringBuilder.ToString();
         }
 
-#pragma warning disable CS0618
-
         public void Serialize(EntityDescription description, XmlWriter writer)
         {
-            // Convert FCM descriptions into their GCM counterparts
-            if (description.GetType().Name == "FcmRegistrationDescription")
-            {
-                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
-            }
-
-            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
-            {
-                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
-            }
-
             DataContractSerializer serializer;
             if (description is RegistrationDescription)
             {
@@ -166,11 +121,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             {
                 serializer = GetSerializer(description.GetType().Name);
             }
-            
+
             serializer.WriteObject(writer, description);
         }
-
-#pragma warning restore CS0618
 
         private DataContractSerializer GetSerializer(string typeName)
         {

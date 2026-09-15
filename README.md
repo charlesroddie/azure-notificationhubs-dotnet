@@ -186,7 +186,7 @@ var tags = new HashSet<string> { "platform_ios", "os_tvos" };
 AppleRegistrationDescription created = await hub.CreateAppleNativeRegistrationAsync(deviceToken, tags);
 ```
 
-Analogous for Android (FCM), Windows Phone (MPNS), and Kindle Fire (ADM).
+Analogous for Android (FCM V1), Windows (WNS), Kindle Fire (ADM), Baidu, and browsers.
 
 ### Create Template Registrations
 
@@ -252,7 +252,7 @@ var n = new AppleNotification(jsonBody);
 NotificationOutcome outcome = await hub.SendNotificationAsync(n);
 ```
 
-Analogous for Android, Windows, Windows Phone, Kindle Fire and Baidu PNS.
+Analogous for Android (FCM V1), Windows, Kindle Fire, Baidu and browsers.
 
 ### Send a Template Notification
 
