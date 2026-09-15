@@ -78,6 +78,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             });
         }
 
+        public bool CanDeserialize(string typeName) => this.entirySerializers.ContainsKey(typeName);
+
         public EntityDescription Deserialize(XmlReader reader, string typeName)
         {
             if (reader == null)

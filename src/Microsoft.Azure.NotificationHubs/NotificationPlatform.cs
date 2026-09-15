@@ -4,6 +4,7 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
 using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -24,6 +25,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         [EnumMember(Value = "apns")]
         Apns=2,
+
+        /// <summary>
+        /// Retired MPNS platform, kept so existing installations can be read
+        /// </summary>
+        [EnumMember(Value = "mpns")]
+        [Obsolete("MPNS is retired.")]
+        Mpns=3,
+
+        /// <summary>
+        /// Retired GCM/legacy FCM platform, kept so existing installations can be read and migrated to FcmV1
+        /// </summary>
+        [EnumMember(Value = "gcm")]
+        [Obsolete("GCM and legacy FCM are retired. Use FcmV1.")]
+        Gcm=4,
 
         /// <summary>
         /// ADM Installation Platform

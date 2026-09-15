@@ -3009,6 +3009,13 @@ namespace Microsoft.Azure.NotificationHubs
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
+
+                        // Registrations of retired platforms (e.g. GCM, MPNS) may still be stored
+                        if (!_entitySerializer.CanDeserialize(xmlReader.Name))
+                        {
+                            continue;
+                        }
+
                         var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
 
                         result.Add(entity);
