@@ -146,11 +146,11 @@ namespace Microsoft.Azure.NotificationHubs
             get { return BrowserCredential.AppPlatformName; }
         }
 
-        internal override string GetPnsHandle() => JsonSerializer.Serialize(_browserPushSubscription);
+        internal override string GetPnsHandle() => JsonSerializer.Serialize(_browserPushSubscription, NotificationHubsJsonContext.Instance.BrowserPushSubscription);
 
         internal override void SetPnsHandle(string pnsHandle)
         {
-            var browserPushSubscription = JsonSerializer.Deserialize<BrowserPushSubscription>(pnsHandle);
+            var browserPushSubscription = JsonSerializer.Deserialize(pnsHandle, NotificationHubsJsonContext.Instance.BrowserPushSubscription);
             Endpoint = browserPushSubscription.Endpoint;
             P256DH = browserPushSubscription.P256DH;
             Auth = browserPushSubscription.Auth;

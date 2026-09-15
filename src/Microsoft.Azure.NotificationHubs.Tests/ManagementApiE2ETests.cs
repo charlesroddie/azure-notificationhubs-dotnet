@@ -14,7 +14,7 @@ using Azure.Storage.Sas;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Azure.NotificationHubs.Tests;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Xunit;
 
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
@@ -269,7 +269,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                     throw new Exception($"Cannot find data file for method '{methodName}'. Test data must be recorded first.");
                 }
 
-                var payloads = JsonConvert.DeserializeObject<TestServerSession>(File.ReadAllText(filePath));
+                var payloads = JsonSerializer.Deserialize<TestServerSession>(File.ReadAllText(filePath), new JsonSerializerOptions { AllowTrailingCommas = true, ReadCommentHandling = JsonCommentHandling.Skip });
 
                 _testServer.LoadResponses(payloads);
                 _testServer.BaseUri = "http://test";
@@ -280,7 +280,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         {
             if (_testServer.RecordingMode == RecordingMode.Recording)
             {
-                File.WriteAllText($"MockData\\{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+                File.WriteAllText($"MockData\\{methodName}.http", JsonSerializer.Serialize(_testServer.Session));
             }
         }
 

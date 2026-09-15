@@ -1,92 +1,94 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
     /// Represents device in Azure Notification Hub
     /// </summary>
-    [JsonObject(MemberSerialization = MemberSerialization.OptOut, ItemRequired = Required.Default)]
     public class Installation
     {
         /// <summary>
         /// Get or sets unique identifier for the installation
         /// </summary>
-        [JsonProperty(PropertyName = "installationId")]
+        [JsonPropertyName("installationId")]
         public string InstallationId { get; set; }
 
         /// <summary>
         /// Get or sets unique identifier for the user
         /// </summary>
-        [JsonProperty(PropertyName = "userId")]
+        [JsonPropertyName("userId")]
         public string UserId { get; set; }
 
         /// <summary>
         /// Gets or set registration id, token or URI obtained from platform-specific notification service
         /// </summary>
-        [JsonProperty(PropertyName = "pushChannel")]
+        [JsonPropertyName("pushChannel")]
         public string PushChannel { get; set; }
 
         /// <summary>
         /// Gets if installation is expired or not
         /// </summary>
-        [JsonProperty(PropertyName = "pushChannelExpired")]
+        [JsonPropertyName("pushChannelExpired")]
         public bool? PushChannelExpired { get; set; }
 
         /// <summary>
         /// Gets or sets notification platform for the installation
         /// </summary>
-        [JsonConverter(typeof (StringEnumConverter))]
-        [JsonProperty(PropertyName = "platform")]
+        [JsonPropertyName("platform")]
         public NotificationPlatform Platform { get; set; }
 
         /// <summary>
         /// Gets or sets expiration for the installation
         /// </summary>
-        [JsonProperty(PropertyName = "expirationTime")]
+        [JsonPropertyName("expirationTime")]
         public DateTime? ExpirationTime { get; set; }
 
         /// <summary>
         /// Gets or sets collection of tags
         /// </summary>
-        [JsonProperty(PropertyName = "tags", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("tags")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IList<string> Tags { get; set; }
 
         /// <summary>
         /// Gets or sets collection of push variables
         /// </summary>
-        [JsonProperty(PropertyName = "pushVariables", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("pushVariables")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IDictionary<string, string> PushVariables { get; set; }
 
         /// <summary>
         /// Gets or sets collection of templates
         /// </summary>
-        [JsonProperty(PropertyName = "templates", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("templates")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IDictionary<string, InstallationTemplate> Templates { get; set; }
 
         /// <summary>
         /// Gets or sets collection of secondary tiles for WNS
         /// </summary>
-        [JsonProperty(PropertyName = "secondaryTiles", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("secondaryTiles")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [Obsolete]
         public IDictionary<string, WnsSecondaryTile> SecondaryTiles { get; set; }
 
         internal string ToJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonSerializer.Serialize(this, NotificationHubsJsonContext.Instance.Installation);
         }
 
         internal static Installation FromJson(string json)
         {
-            return JsonConvert.DeserializeObject<Installation>(json);
+            return JsonSerializer.Deserialize(json, NotificationHubsJsonContext.Instance.Installation);
         }
     }
 }

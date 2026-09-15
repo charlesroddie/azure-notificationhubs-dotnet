@@ -14,7 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Messaging;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -139,7 +139,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.PushVariables != null && this.PushVariables.Count > 0)
                 {
-                    return JsonConvert.SerializeObject(this.PushVariables);
+                    return JsonSerializer.Serialize(this.PushVariables, NotificationHubsJsonContext.Instance.StringDictionary);
                 }
 
                 return null;
@@ -151,7 +151,7 @@ namespace Microsoft.Azure.NotificationHubs
                     return;
                 }
 
-                this.PushVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(value);
+                this.PushVariables = JsonSerializer.Deserialize(value, NotificationHubsJsonContext.Instance.StringDictionaryConcrete);
             }
         }
 
