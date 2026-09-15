@@ -291,14 +291,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public static string GenerateRandomKey()
         {
             byte[] key256 = new byte[32];
-#if NETFRAMEWORK
-            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
-            rngCryptoServiceProvider.GetBytes(key256);
-#else
-            var rngCryptoServiceProvider = RandomNumberGenerator.Create();
-            rngCryptoServiceProvider.GetBytes(key256);
-#endif
-
+            using var randomNumberGenerator = RandomNumberGenerator.Create();
+            randomNumberGenerator.GetBytes(key256);
 
             return Convert.ToBase64String(key256);
         }

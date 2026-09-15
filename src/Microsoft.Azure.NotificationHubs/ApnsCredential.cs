@@ -291,7 +291,11 @@ namespace Microsoft.Azure.NotificationHubs
             }
             try
             {
+#if NET9_0_OR_GREATER
+                this.NativeCertificate = X509CertificateLoader.LoadPkcs12(Convert.FromBase64String(this.ApnsCertificate), this.CertificateKey);
+#else
                 this.NativeCertificate = this.CertificateKey == null ? new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate)) : new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate), this.CertificateKey);
+#endif
                 if (!this.NativeCertificate.HasPrivateKey)
                 {
                     throw new InvalidDataContractException(SRClient.ApnsCertificatePrivatekeyMissing);

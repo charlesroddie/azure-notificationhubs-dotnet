@@ -12,7 +12,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     /// <summary>
     /// Details about the cause of a Messaging Exception that map errors to specific exceptions.
     /// </summary>
-    [Serializable]
     public sealed class MessagingExceptionDetail
     {
         internal MessagingExceptionDetail(ExceptionErrorCodes errorCode, string message, ErrorLevelType errorLevel, HttpStatusCode? httpStatusCode, string trackingId)

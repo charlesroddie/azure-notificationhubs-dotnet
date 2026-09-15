@@ -5,12 +5,10 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     /// <summary> Exception for signalling messaging entity not found errors. </summary>
-    [Serializable]
     public sealed class MessagingEntityNotFoundException : MessagingException
     {
         /// <summary> Constructor. </summary>
@@ -25,14 +23,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <param name="innerException"> The inner exception. </param>
         internal MessagingEntityNotFoundException(MessagingExceptionDetail detail, Exception innerException) :
             base(detail, false, innerException)
-        {
-        }
-
-        /// <summary> Constructor. </summary>
-        /// <param name="info">    The information. </param>
-        /// <param name="context"> The context. </param>
-        MessagingEntityNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
 

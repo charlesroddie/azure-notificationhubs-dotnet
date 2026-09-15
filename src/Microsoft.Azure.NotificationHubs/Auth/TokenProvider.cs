@@ -1,12 +1,11 @@
-﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
 using System;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Internal;
+using System.Collections.Concurrent;
 
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
@@ -15,7 +14,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     /// </summary>
     public abstract class TokenProvider : IDisposable
     {
-        private readonly IMemoryCache _tokenCache;
+        private readonly ConcurrentDictionary<string, (string Token, DateTime ExpiresAtUtc)> _tokenCache = new ConcurrentDictionary<string, (string, DateTime)>();
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
 
@@ -34,7 +33,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <param name="cacheTokens">Cache tokens.</param><param name="cacheExpirationTime">Cache expiration time.</param>
         protected TokenProvider(bool cacheTokens, TimeSpan cacheExpirationTime)
         {
-            _tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
             _cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
             _cacheExpirationTime = cacheExpirationTime;
         }
@@ -59,7 +57,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <summary>
         /// Gets whether the token provider strips query parameters.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         /// true if the token provider strips query parameters; otherwise, false.
         /// </returns>
@@ -68,7 +66,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <summary>
         /// Asynchronously retrieves the token for the provider.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         /// The result of the asynchronous operation.
         /// </returns>
@@ -106,16 +104,20 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         private bool TryFetchFromCache(string appliesTo, string action, bool bypassCache, out string token)
         {
             token = null;
-            var cacheKey = BuildKey(appliesTo, action);
-            return !bypassCache && _cacheTokens && _tokenCache.TryGetValue(cacheKey, out token);
+            if (bypassCache || !_cacheTokens || !_tokenCache.TryGetValue(BuildKey(appliesTo, action), out var entry) || entry.ExpiresAtUtc <= DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            token = entry.Token;
+            return true;
         }
 
         private void TrySetIntoCache(string appliesTo, string action, bool bypassCache, string token)
         {
             if(!bypassCache && _cacheTokens)
             {
-                var cacheKey = BuildKey(appliesTo, action);
-                _tokenCache.Set(cacheKey, token, new MemoryCacheEntryOptions().SetAbsoluteExpiration(_cacheExpirationTime));
+                _tokenCache[BuildKey(appliesTo, action)] = (token, DateTime.UtcNow + _cacheExpirationTime);
             }
         }
 
@@ -134,7 +136,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// </summary>
         public void Dispose()
         {
-            _tokenCache?.Dispose();
+            _tokenCache.Clear();
         }
 
         private static string NormalizeUri(string uri, string scheme, bool stripQueryParameters = true, bool stripPath = false, bool ensureTrailingSlash = false)

@@ -56,11 +56,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
         internal static string UrlEncode(string url)
         {
-#if NET461
-            return System.Net.WebUtility.UrlEncode(url);
-#else
             return HttpUtility.UrlEncode(url);
-#endif
         }
 
         private static string BuildExpiresOn(TimeSpan timeToLive)
