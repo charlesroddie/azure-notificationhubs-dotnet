@@ -24,10 +24,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         const string FixedClaimType = "SharedAccessKey";
         const string FixedClaimValue = "None";
 
-        /// <summary>
-        /// This is done to help json and other deserializers
-        /// </summary>
-        SharedAccessAuthorizationRule()
+        // Used by XML deserialization
+        internal SharedAccessAuthorizationRule()
+            : base(initializeRevisionInfo: false)
         {
         }
 
@@ -288,13 +287,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.KeyName, (w, n, o) => XmlContract.WriteString(w, n, o.InternalKeyName, false), (o, e) => o.InternalKeyName = XmlContract.ReadString(e)),
             XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.PrimaryKey, (w, n, o) => XmlContract.WriteString(w, n, o.InternalPrimaryKey, false), (o, e) => o.InternalPrimaryKey = XmlContract.ReadString(e)),
             XmlMember.Create<SharedAccessAuthorizationRule>(ManagementStrings.SecondaryKey, (w, n, o) => XmlContract.WriteString(w, n, o.InternalSecondaryKey, false), (o, e) => o.InternalSecondaryKey = XmlContract.ReadString(e)));
-
-        internal static SharedAccessAuthorizationRule CreateForXml()
-        {
-            var rule = new SharedAccessAuthorizationRule();
-            rule.ClearRevisionInfo();
-            return rule;
-        }
 
         /// <summary>
         /// Generates a Random base 64 encoded Key with crypto apis

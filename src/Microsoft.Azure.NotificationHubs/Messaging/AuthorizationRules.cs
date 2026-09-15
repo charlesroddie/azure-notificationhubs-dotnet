@@ -50,7 +50,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                     throw new SerializationException($"Unsupported authorization rule type {XmlContract.ReadInstanceType(item)}.");
                 }
 
-                return (AuthorizationRule)XmlContract.ReadNested(item, SharedAccessAuthorizationRule.CreateForXml(), SharedAccessAuthorizationRule.SharedAccessXmlMembers);
+                return (AuthorizationRule)XmlContract.ReadNested(item, new SharedAccessAuthorizationRule(), SharedAccessAuthorizationRule.SharedAccessXmlMembers);
             });
 
             return rules == null ? null : new AuthorizationRules(rules);

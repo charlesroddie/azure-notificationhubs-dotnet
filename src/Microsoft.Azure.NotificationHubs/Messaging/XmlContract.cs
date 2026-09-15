@@ -39,10 +39,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
     /// <summary>
     /// Reads and writes XML in the format produced by DataContractSerializer, without reflection.
+    /// The [DataContract] and [DataMember] attributes on the contract types are kept as the reference for the equivalence tests.
     /// </summary>
     internal static class XmlContract
     {
-        public const string Namespace = ManagementStrings.Namespace;
         const string InstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
         const string ArraysNamespace = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
         static readonly XName NilName = XName.Get("nil", InstanceNamespace);
@@ -50,7 +50,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
         public static void WriteObject(XmlWriter writer, string name, object value, XmlMember[] members, string instanceType = null)
         {
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             writer.WriteAttributeString("xmlns", "i", null, InstanceNamespace);
             WriteInstanceType(writer, instanceType);
             WriteMembers(writer, value, members);
@@ -75,10 +75,19 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             var next = 0;
             foreach (var child in element.Elements())
             {
-                var index = child.Name.NamespaceName == Namespace ? FindMember(members, next, child.Name.LocalName) : -1;
+                var index = child.Name.NamespaceName == ManagementStrings.Namespace ? FindMember(members, next, child.Name.LocalName) : -1;
                 if (index >= 0)
                 {
-                    members[index].Read(value, child);
+                    try
+                    {
+                        members[index].Read(value, child);
+                    }
+                    catch (Exception ex) when (ex is FormatException || ex is OverflowException)
+                    {
+                        // Wrapped so callers that handle XmlException inside SerializationException see invalid values consistently
+                        throw new SerializationException($"There was an error deserializing element '{child.Name.LocalName}'.", new XmlException(ex.Message, ex));
+                    }
+
                     next = index + 1;
                 }
                 else if (entity != null)
@@ -95,9 +104,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 throw new XmlException($"Expecting element '{name}'.");
             }
 
-            if (reader.LocalName != name || reader.NamespaceURI != Namespace)
+            if (reader.LocalName != name || reader.NamespaceURI != ManagementStrings.Namespace)
             {
-                throw new SerializationException($"Expecting element '{name}' from namespace '{Namespace}'. Encountered '{reader.LocalName}' from namespace '{reader.NamespaceURI}'.");
+                throw new SerializationException($"Expecting element '{name}' from namespace '{ManagementStrings.Namespace}'. Encountered '{reader.LocalName}' from namespace '{reader.NamespaceURI}'.");
             }
 
             return (XElement)XNode.ReadFrom(reader);
@@ -117,7 +126,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
         public static void WriteNil(XmlWriter writer, string name)
         {
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             writer.WriteAttributeString("nil", InstanceNamespace, "true");
             writer.WriteEndElement();
         }
@@ -134,7 +143,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 return;
             }
 
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             WriteInstanceType(writer, instanceType);
             WriteMembers(writer, value, members);
             writer.WriteEndElement();
@@ -163,7 +172,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 return;
             }
 
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             foreach (var item in items)
             {
                 writeItem(writer, itemName, item);
@@ -178,7 +187,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public static void WriteDictionary<TValue>(XmlWriter writer, string name, IEnumerable<KeyValuePair<string, TValue>> items, string itemName, string keyName, string valueName, Action<XmlWriter, string, TValue> writeValue, bool emitDefault) =>
             WriteList(writer, name, items, itemName, (w, n, item) =>
             {
-                w.WriteStartElement(n, Namespace);
+                w.WriteStartElement(n, ManagementStrings.Namespace);
                 WriteString(w, keyName, item.Key, true);
                 writeValue(w, valueName, item.Value);
                 w.WriteEndElement();
@@ -194,7 +203,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             foreach (var item in element.Elements())
             {
-                target.Add(ReadString(item.Element(XName.Get(keyName, Namespace))), readValue(item.Element(XName.Get(valueName, Namespace))));
+                target.Add(ReadString(RequiredElement(item, XName.Get(keyName, ManagementStrings.Namespace))), readValue(RequiredElement(item, XName.Get(valueName, ManagementStrings.Namespace))));
             }
 
             return target;
@@ -215,7 +224,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 return;
             }
 
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             writer.WriteAttributeString("xmlns", "a", null, ArraysNamespace);
             foreach (var item in items)
             {
@@ -248,7 +257,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             var result = new Dictionary<string, string>();
             foreach (var item in element.Elements())
             {
-                result.Add(ReadString(item.Element(XName.Get("Key", ArraysNamespace))), ReadString(item.Element(XName.Get("Value", ArraysNamespace))));
+                result.Add(ReadString(RequiredElement(item, XName.Get("Key", ArraysNamespace))), ReadString(RequiredElement(item, XName.Get("Value", ArraysNamespace))));
             }
 
             return result;
@@ -258,7 +267,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value != null)
             {
-                writer.WriteElementString(name, Namespace, value);
+                writer.WriteElementString(name, ManagementStrings.Namespace, value);
             }
             else if (emitDefault)
             {
@@ -276,7 +285,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 return;
             }
 
-            writer.WriteStartElement(name, Namespace);
+            writer.WriteStartElement(name, ManagementStrings.Namespace);
             if (!string.IsNullOrEmpty(value.Value))
             {
                 writer.WriteCData(value.Value);
@@ -300,9 +309,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value, XmlDateTimeSerializationMode.RoundtripKind));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value, XmlDateTimeSerializationMode.RoundtripKind));
             }
         }
+
+        public static void WriteDateTime(XmlWriter writer, string name, DateTime value, bool emitDefault) =>
+            WriteDateTime(writer, name, emitDefault || value != default ? value : (DateTime?)null);
 
         public static DateTime? ReadDateTime(XElement element) =>
             IsNil(element) ? (DateTime?)null : XmlConvert.ToDateTime(element.Value, XmlDateTimeSerializationMode.RoundtripKind);
@@ -311,7 +323,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value));
             }
         }
 
@@ -321,9 +333,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value));
             }
         }
+
+        public static void WriteLong(XmlWriter writer, string name, long value, bool emitDefault) =>
+            WriteLong(writer, name, emitDefault || value != 0 ? value : (long?)null);
 
         public static long? ReadLong(XElement element) => IsNil(element) ? (long?)null : XmlConvert.ToInt64(element.Value);
 
@@ -331,7 +346,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value));
             }
         }
 
@@ -341,9 +356,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value));
             }
         }
+
+        public static void WriteDecimal(XmlWriter writer, string name, decimal value, bool emitDefault) =>
+            WriteDecimal(writer, name, emitDefault || value != 0 ? value : (decimal?)null);
 
         public static decimal? ReadDecimal(XElement element) => IsNil(element) ? (decimal?)null : XmlConvert.ToDecimal(element.Value);
 
@@ -351,17 +369,29 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value.HasValue)
             {
-                writer.WriteElementString(name, Namespace, XmlConvert.ToString(value.Value));
+                writer.WriteElementString(name, ManagementStrings.Namespace, XmlConvert.ToString(value.Value));
             }
         }
 
         public static bool? ReadBool(XElement element) => IsNil(element) ? (bool?)null : XmlConvert.ToBoolean(element.Value);
 
         public static void WriteEnum<T>(XmlWriter writer, string name, T value) where T : struct, Enum =>
-            writer.WriteElementString(name, Namespace, value.ToString());
+            writer.WriteElementString(name, ManagementStrings.Namespace, value.ToString());
 
-        public static T ReadEnum<T>(XElement element) where T : struct =>
-            Enum.TryParse(element.Value, out T value) ? value : throw new SerializationException($"Invalid {typeof(T).Name} value '{element.Value}'.");
+        // Only exact member names, as DataContractSerializer accepts
+        public static T ReadEnum<T>(XElement element) where T : struct
+        {
+            var value = element.Value;
+            if (Array.IndexOf(Enum.GetNames(typeof(T)), value) < 0)
+            {
+                throw new FormatException($"'{value}' is not a valid {typeof(T).Name} value.");
+            }
+
+            return (T)Enum.Parse(typeof(T), value);
+        }
+
+        static XElement RequiredElement(XElement parent, XName name) =>
+            parent.Element(name) ?? throw new SerializationException($"Element '{name.LocalName}' is missing from '{parent.Name.LocalName}'.");
 
         static int FindMember(XmlMember[] members, int start, string name)
         {

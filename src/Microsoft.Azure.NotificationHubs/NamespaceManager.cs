@@ -665,6 +665,10 @@ namespace Microsoft.Azure.NotificationHubs
                     return (T)new EntityDescriptionSerializer().Deserialize(xmlReader, typeof(T).Name);
                 }
             }
+            catch (SerializationException ex) when (ex.InnerException is XmlException xmlException)
+            {
+                throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);
+            }
             catch (XmlException xmlException)
             {
                 throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);

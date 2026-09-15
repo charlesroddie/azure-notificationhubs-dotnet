@@ -48,10 +48,18 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string SharedAccessKeyClaimType = "sharedaccesskey";
 
         internal AuthorizationRule()
+            : this(initializeRevisionInfo: true)
         {
-            CreatedTime = DateTime.UtcNow;
-            ModifiedTime = DateTime.UtcNow;
-            Revision = 0L;
+        }
+
+        // Deserialized rules keep only the revision values present in the XML
+        private protected AuthorizationRule(bool initializeRevisionInfo)
+        {
+            if (initializeRevisionInfo)
+            {
+                CreatedTime = DateTime.UtcNow;
+                ModifiedTime = DateTime.UtcNow;
+            }
         }
 
         /// <summary>
@@ -299,18 +307,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             XmlMember.Create<AuthorizationRule>(ManagementStrings.ClaimType, (w, n, o) => XmlContract.WriteString(w, n, o.InternalClaimType, false), (o, e) => o.InternalClaimType = XmlContract.ReadString(e)),
             XmlMember.Create<AuthorizationRule>(ManagementStrings.ClaimValue, (w, n, o) => XmlContract.WriteString(w, n, o.InternalClaimValue, false), (o, e) => o.InternalClaimValue = XmlContract.ReadString(e)),
             XmlMember.Create<AuthorizationRule>(ManagementStrings.Rights, (w, n, o) => XmlContract.WriteList(w, n, o.InternalRights, ManagementStrings.AccessRights, (xw, itemName, right) => XmlContract.WriteEnum(xw, itemName, right), false), (o, e) => o.InternalRights = XmlContract.ReadList(e, item => XmlContract.ReadEnum<AccessRights>(item))),
-            XmlMember.Create<AuthorizationRule>(nameof(CreatedTime), (w, n, o) => XmlContract.WriteDateTime(w, n, o.CreatedTime == default ? (DateTime?)null : o.CreatedTime), (o, e) => o.CreatedTime = XmlContract.ReadDateTime(e) ?? default),
-            XmlMember.Create<AuthorizationRule>(nameof(ModifiedTime), (w, n, o) => XmlContract.WriteDateTime(w, n, o.ModifiedTime == default ? (DateTime?)null : o.ModifiedTime), (o, e) => o.ModifiedTime = XmlContract.ReadDateTime(e) ?? default),
-            XmlMember.Create<AuthorizationRule>(nameof(Revision), (w, n, o) => XmlContract.WriteLong(w, n, o.Revision == 0 ? (long?)null : o.Revision), (o, e) => o.Revision = XmlContract.ReadLong(e) ?? 0),
+            XmlMember.Create<AuthorizationRule>(nameof(CreatedTime), (w, n, o) => XmlContract.WriteDateTime(w, n, o.CreatedTime, false), (o, e) => o.CreatedTime = XmlContract.ReadDateTime(e) ?? default),
+            XmlMember.Create<AuthorizationRule>(nameof(ModifiedTime), (w, n, o) => XmlContract.WriteDateTime(w, n, o.ModifiedTime, false), (o, e) => o.ModifiedTime = XmlContract.ReadDateTime(e) ?? default),
+            XmlMember.Create<AuthorizationRule>(nameof(Revision), (w, n, o) => XmlContract.WriteLong(w, n, o.Revision, false), (o, e) => o.Revision = XmlContract.ReadLong(e) ?? 0),
         };
-
-        // Deserialized rules keep only the values present in the XML
-        internal void ClearRevisionInfo()
-        {
-            CreatedTime = default;
-            ModifiedTime = default;
-            Revision = 0;
-        }
 
         static bool AreAccessRightsUnique(IEnumerable<AccessRights> rights )
         {

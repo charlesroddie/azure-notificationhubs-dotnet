@@ -141,6 +141,52 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             }
         }
 
+        [Fact]
+        public void InvalidXmlFailsLikeDataContractSerializer()
+        {
+            const string arrays = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+            const string output = "<OutputContainerUri>https://a</OutputContainerUri>";
+            string Job(string members) => $"<NotificationHubJob xmlns=\"{ManagementStrings.Namespace}\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\">{members}</NotificationHubJob>";
+            const string type = "<Type>ExportRegistrations</Type>";
+            var cases = new (string Name, string Xml)[]
+            {
+                ("invalid decimal", Job("<Progress>abc</Progress>" + type + output)),
+                ("decimal overflow", Job("<Progress>99999999999999999999999999999999</Progress>" + type + output)),
+                ("invalid date", Job(type + output + "<CreatedAt>yesterday</CreatedAt>")),
+                ("numeric enum", Job("<Type>1</Type>" + output)),
+                ("undefined enum", Job("<Type>7</Type>" + output)),
+                ("combined enum", Job("<Type>ExportRegistrations, ImportCreateRegistrations</Type>" + output)),
+                ("dictionary item without key", Job($"{type}{output}<InputProperties xmlns:a=\"{arrays}\"><a:KeyValueOfstringstring><a:Value>v</a:Value></a:KeyValueOfstringstring></InputProperties>")),
+            };
+
+            // The cases differ from this valid job only in the invalid part
+            var valid = Job(type + output);
+            DcsRead(valid, typeof(NotificationHubJob));
+            using (var reader = XmlReader.Create(new StringReader(valid)))
+            {
+                Assert.Equal(NotificationHubJobType.ExportRegistrations, ((NotificationHubJob)new EntityDescriptionSerializer().Deserialize(reader, nameof(NotificationHubJob))).JobType);
+            }
+
+            foreach (var (name, xml) in cases)
+            {
+                var expected = Record.Exception(() => DcsRead(xml, typeof(NotificationHubJob)));
+                var actual = Record.Exception(() =>
+                {
+                    using var reader = XmlReader.Create(new StringReader(xml));
+                    new EntityDescriptionSerializer().Deserialize(reader, nameof(NotificationHubJob));
+                });
+
+                // DataContractSerializer's exception types vary by value type; XmlContract always throws SerializationException
+                if (expected == null || !(actual is SerializationException))
+                {
+                    throw new XunitException($"{name}: DataContractSerializer threw {Describe(expected)}, XmlContract threw {Describe(actual)}");
+                }
+            }
+        }
+
+        static string Describe(Exception exception) =>
+            exception == null ? "nothing" : $"{exception.GetType().Name}(inner {exception.InnerException?.GetType().Name ?? "none"})";
+
         static IEnumerable<(string Name, EntityDescription Entity)> EntitySamples()
         {
             yield return ("Apple", new AppleRegistrationDescription("0123abcd", new[] { "t1", "t2" }) { RegistrationId = "r1", ETag = "3", ExpirationTime = Time, PushVariables = new Dictionary<string, string> { { "v", Special } } });

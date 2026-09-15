@@ -240,7 +240,7 @@ namespace Microsoft.Azure.NotificationHubs
         internal static readonly XmlMember[] JobXmlMembers =
         {
             XmlMember.Create<NotificationHubJob>(ManagementStrings.NotificationHubJobId, (w, n, o) => XmlContract.WriteString(w, n, o.JobId, false), (o, e) => o.JobId = XmlContract.ReadString(e)),
-            XmlMember.Create<NotificationHubJob>(ManagementStrings.Progress, (w, n, o) => XmlContract.WriteDecimal(w, n, o.Progress == 0 ? (decimal?)null : o.Progress), (o, e) => o.Progress = XmlContract.ReadDecimal(e) ?? 0),
+            XmlMember.Create<NotificationHubJob>(ManagementStrings.Progress, (w, n, o) => XmlContract.WriteDecimal(w, n, o.Progress, false), (o, e) => o.Progress = XmlContract.ReadDecimal(e) ?? 0),
             XmlMember.Create<NotificationHubJob>(ManagementStrings.JobType, (w, n, o) => XmlContract.WriteEnum(w, n, o.JobType), (o, e) => o.JobType = XmlContract.ReadEnum<NotificationHubJobType>(e)),
             XmlMember.Create<NotificationHubJob>(ManagementStrings.Status, (w, n, o) => { if (o.Status != default) XmlContract.WriteEnum(w, n, o.Status); }, (o, e) => o.Status = XmlContract.ReadEnum<NotificationHubJobStatus>(e)),
             XmlMember.Create<NotificationHubJob>(ManagementStrings.OutputContainerUri, (w, n, o) => XmlContract.WriteUri(w, n, o.OutputContainerUri, false), (o, e) => o.OutputContainerUri = XmlContract.ReadUri(e)),
