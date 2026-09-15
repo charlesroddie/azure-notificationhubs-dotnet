@@ -6,25 +6,21 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>Microsoft.Azure.NotificationHubs</PackageId>
-    <Version>4.2.0</Version>
-    <Authors>Microsoft</Authors>
+    <PackageId>AzureNotificationHubs.Community</PackageId>
+    <Version>5.0.0</Version>
+    <Authors>AzureNotificationHubs.Community contributors</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://aka.ms/NHNuget</PackageProjectUrl>
-    <PackageIcon>aznh-icon-128x128.png</PackageIcon>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/SummaticLtd/azure-notificationhubs-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SummaticLtd/azure-notificationhubs-dotnet</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>
-      Use this for Microsoft Azure Notification Hubs back end operations.
+      Unofficial community fork of Microsoft.Azure.NotificationHubs, the .NET client for Azure Notification Hubs back end operations.
 
-      It adds Microsoft.Azure.NotificationHubs.dll to your project. Notification Hubs support sending push notifications to Windows, iOS, Android, Amazon, Baidu, and web browsers.
-
-      For more information on Notification Hub, please visit: http://azure.microsoft.com/en-us/documentation/articles/notification-hubs-overview/
+      Native AOT compatible, with no Newtonsoft.Json or DataContractSerializer dependency and retired platforms removed. The namespace and assembly name are unchanged.
     </Description>
-    <PackageReleaseNotes>
-      Visit https://github.com/Azure/azure-notificationhubs-dotnet/releases for latest release notes.
-    </PackageReleaseNotes>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <PackageTags>Microsoft Azure windowsazureofficial NotificationHub Notifications Notification Hub Push Windows iOS Android Baidu Kindle Amazon</PackageTags>
+    <PackageReleaseNotes>https://github.com/SummaticLtd/azure-notificationhubs-dotnet/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <Copyright>© Microsoft Corporation. © AzureNotificationHubs.Community contributors.</Copyright>
+    <PackageTags>Azure NotificationHubs NotificationHub Notifications Push AOT Windows iOS Android Baidu Kindle Amazon</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\.github\icons\aznh-icon-128x128.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
